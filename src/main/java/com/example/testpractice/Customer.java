@@ -5,9 +5,7 @@ import java.util.List;
 
 public class Customer {
     private int customerNumber, customerPIN;
-
     private static int currentCustomerNumber = 0;
-
     static ArrayList<String> validCustomerNumber = new ArrayList<String>();
     private String firstName, lastName, address, dateOfBirth;
 
