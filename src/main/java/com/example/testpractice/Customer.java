@@ -30,7 +30,7 @@ public class Customer {
         setDateOfBirth(dateOfBirth);
 
         System.out.println("\nNew customer created. \nNumber: " + customerNumber + " \nPIN: "+ customerPIN
-        + " \nName: " + firstName + " " + lastName + " \nAddress: " + address + " \nDOB: " + dateOfBirth);
+        + " \nName: " + firstName + " " + lastName + " \nAddress: " + address + " \nDOB: " + dateOfBirth + "\n");
     }
 
     public int getCustomerNumber() {
@@ -39,7 +39,7 @@ public class Customer {
 
     /**
      *
-     * @param currentCustomerNumber must be greater than 0, must be unique, must be assigned sequentially.
+     * @param currentCustomerNumber must be unique, must be assigned sequentially.
      */
     public void setCustomerNumber(int currentCustomerNumber) {
         this.customerNumber = currentCustomerNumber;
@@ -110,5 +110,9 @@ public class Customer {
 
     public static ArrayList displayAssignedCustomerNumbers(){
         return validCustomerNumber;
+    }
+
+    public void openAccount(String accountType){
+         Account account1 = new Account(customerNumber, accountType);
     }
 }
