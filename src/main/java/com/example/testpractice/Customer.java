@@ -1,21 +1,14 @@
 package com.example.testpractice;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Customer {
+    /**
+     * Bank customer class.
+     */
     private int customerNumber, customerPIN;
-    private static int currentCustomerNumber = 0;
-    static ArrayList<String> validCustomerNumber = new ArrayList<String>();
     private String firstName, lastName, address, dateOfBirth;
 
-    public Customer(int customerPIN, String firstName, String lastName, String address, String dateOfBirth) {
-
-        /**
-         * Increment the current customer number by one, and assign it to the customer we are constructing
-         */
-        currentCustomerNumber++;
-        setCustomerNumber(currentCustomerNumber);
+    public Customer(int customerNumber, int customerPIN, String firstName, String lastName, String address, String dateOfBirth){
+        setCustomerNumber(customerNumber);
 
         setCustomerPIN(customerPIN);
 
@@ -27,7 +20,7 @@ public class Customer {
 
         setDateOfBirth(dateOfBirth);
 
-        System.out.println("\nNew customer created. \nNumber: " + customerNumber + " \nPIN: "+ customerPIN
+        System.out.println("\nNew customer created. \nCustomer Number: " + customerNumber + " \nPIN: "+ customerPIN
         + " \nName: " + firstName + " " + lastName + " \nAddress: " + address + " \nDOB: " + dateOfBirth + "\n");
     }
 
@@ -35,13 +28,8 @@ public class Customer {
         return customerNumber;
     }
 
-    /**
-     *
-     * @param currentCustomerNumber must be unique, must be assigned sequentially.
-     */
-    public void setCustomerNumber(int currentCustomerNumber) {
-        this.customerNumber = currentCustomerNumber;
-        validCustomerNumber.add(Integer.toString(this.customerNumber));
+    public void setCustomerNumber(int customerNumber) {
+        this.customerNumber = customerNumber;
     }
 
     public int getCustomerPIN() {
@@ -106,11 +94,7 @@ public class Customer {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public static ArrayList displayAssignedCustomerNumbers(){
-        return validCustomerNumber;
-    }
-
     public void openAccount(String accountType){
-         Account account1 = new Account(customerNumber, accountType);
+         Main.accounts.add(new Account(customerNumber, accountType));
     }
 }

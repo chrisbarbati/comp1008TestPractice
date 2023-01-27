@@ -1,28 +1,25 @@
 package com.example.testpractice;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Account {
     /***
-     * Bank account.
+     * Bank account class.
      */
     private double balance;
-    private int accountNumber, accountHolder;
+    private int accountHolder;
 
-    private static int currentAccountNumber = 0;
+    private int accountNumber = Main.accounts.size() + 1;
     private String accountType;
 
-    static ArrayList<String> validAccountNumber = new ArrayList<String>();
-
-    public Account(int accountHolder, String accountType) {
+    public Account(int customerNumber, String accountType) {
         setBalance(balance);
         setAccountNumber(accountNumber);
-        setAccountHolder(accountHolder);
+        setAccountHolder(customerNumber);
         setAccountType(accountType);
-        System.out.println("New account created. \nBalance: " + balance + " \nNumber: "+ accountNumber
-                + " \nAccount Holder: " + accountHolder + " \nAccount Type: " + accountType + "\n\n");
+        System.out.println("New account created. \nAccount Number: "+ accountNumber + "\nAccount Holder: "
+                + accountHolder + " \nBalance: " + balance + " \nAccount Type: " + accountType + "\n\n");
     }
 
     public double getBalance() {
@@ -31,7 +28,7 @@ public class Account {
 
     /**
      *
-     * @param balance represents account balance. Can be negative if account is overdrawn
+     * @param balance represents account balance. Can be negative if account is overdrawn. Starts at zero
      */
     public void setBalance(double balance) {
         this.balance = 0;
@@ -44,13 +41,11 @@ public class Account {
 
     /**
      *
-     * @param currentAccountNumber represents next account number to be assigned.
-     *                           Must be unique, assigned sequentially.
+     * @param accountNumber represents next account number to be assigned. Passed from Main, using the
+     *                      size of the accounts ArrayList to determine the next free account number.
      */
-    public void setAccountNumber(int currentAccountNumber) {
-        currentAccountNumber++;
-        this.accountNumber = currentAccountNumber;
-        validAccountNumber.add(Integer.toString(this.accountNumber));
+    public void setAccountNumber(int accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     public int getAccountHolder() {
@@ -59,17 +54,19 @@ public class Account {
 
     /**
      *
-     * @param accountHolder represents the customer number of the account holder. Must be greater than zero,
-     *                      must be unique, must be one that is already allocated to a customer.
+     * @param customerNumber represents the customer number of the account holder. Passed from main, uses
+     *                       size of ArrayList to determine which customer object is the
+     *                       account holder.
      */
-    public void setAccountHolder(int accountHolder) {
-        if(Customer.displayAssignedCustomerNumbers().contains(Integer.toString(accountHolder))) {
-            this.accountHolder = accountHolder;
-        }else{
-            throw new IllegalArgumentException("Customer number " + accountHolder + " has not been assigned to a customer.");
-        }
+    public void setAccountHolder(int customerNumber) {
+        this.accountHolder = customerNumber;
     }
 
+    /**
+     * When called, this method returns the valid types of account. To add a new type of account, add it
+     * to this list, otherwise an exception will be thrown.
+     * @return
+     */
     public static List<String> getValidAccountTypes()
     {
         return Arrays.asList("chequing", "savings", "tfsa");
@@ -94,9 +91,5 @@ public class Account {
             throw new IllegalArgumentException(accountType + " is not a valid account type. Options are " +
                     "Chequing, Savings, TFSA");
         }
-    }
-
-    public static ArrayList displayAssignedAccountNumbers(){
-        return validAccountNumber;
     }
 }
