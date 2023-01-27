@@ -7,9 +7,15 @@ public class Main {
      * Bank account program.
      */
     public static void main(String[] args) {
-        Customer dave = new Customer(1, 1234, "David", "Smith",
+        Customer dave = new Customer(1234, "David", "Smith",
                 "742 Evergreen Terrace", "01 01 1996\n\n");
 
-        Account daveChequing = new Account(0, 1, 1, "Chequing");
+        Customer dave2 = new Customer(4321, "David", "Smith",
+                "742 Evergreen Terrace", "01 01 1996\n\n");
+
+        Account daveChequing = new Account(0, 1, 3, "Chequing");
+
+        //Displays which customer numbers have been assigned
+        //System.out.println(dave.displayAssignedCustomerNumbers());
     }
 }

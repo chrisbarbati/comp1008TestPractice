@@ -1,11 +1,35 @@
 package com.example.testpractice;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Customer {
     private int customerNumber, customerPIN;
+
+    private static int currentCustomerNumber = 0;
+
+    static ArrayList<String> validCustomerNumber = new ArrayList<String>();
     private String firstName, lastName, address, dateOfBirth;
 
-    public Customer(int customerNumber, int customerPIN, String firstName, String lastName, String address, String dateOfBirth) {
-        System.out.println("New customer created. \nNumber: " + customerNumber + " \nPIN: "+ customerPIN
+    public Customer(int customerPIN, String firstName, String lastName, String address, String dateOfBirth) {
+
+        /**
+         * Increment the current customer number by one, and assign it to the customer we are constructing
+         */
+        currentCustomerNumber++;
+        setCustomerNumber(currentCustomerNumber);
+
+        setCustomerPIN(customerPIN);
+
+        setFirstName(firstName);
+
+        setLastName(lastName);
+
+        setAddress(address);
+
+        setDateOfBirth(dateOfBirth);
+
+        System.out.println("\nNew customer created. \nNumber: " + customerNumber + " \nPIN: "+ customerPIN
         + " \nName: " + firstName + " " + lastName + " \nAddress: " + address + " \nDOB: " + dateOfBirth);
     }
 
@@ -15,10 +39,11 @@ public class Customer {
 
     /**
      *
-     * @param customerNumber must be greater than 0, must be unique.
+     * @param currentCustomerNumber must be greater than 0, must be unique, must be assigned sequentially.
      */
-    public void setCustomerNumber(int customerNumber) {
-        this.customerNumber = customerNumber;
+    public void setCustomerNumber(int currentCustomerNumber) {
+        this.customerNumber = currentCustomerNumber;
+        validCustomerNumber.add(Integer.toString(this.customerNumber));
     }
 
     public int getCustomerPIN() {
@@ -81,5 +106,9 @@ public class Customer {
      */
     public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public static ArrayList displayAssignedCustomerNumbers(){
+        return validCustomerNumber;
     }
 }
