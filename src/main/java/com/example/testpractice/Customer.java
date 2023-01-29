@@ -20,8 +20,11 @@ public class Customer {
 
         setDateOfBirth(dateOfBirth);
 
-        System.out.println("\nNew customer created. \nCustomer Number: " + customerNumber + " \nPIN: "+ customerPIN
-        + " \nName: " + firstName + " " + lastName + " \nAddress: " + address + " \nDOB: " + dateOfBirth + "\n");
+        //Only prints for customer numbers > 0, so no output is printed for dummy customer.
+        if(customerNumber > 0) {
+            System.out.println("\nNew customer created. \nCustomer Number: " + customerNumber + " \nPIN: " + customerPIN
+                    + " \nName: " + firstName + " " + lastName + " \nAddress: " + address + " \nDOB: " + dateOfBirth + "\n");
+        }
     }
 
     public int getCustomerNumber() {
