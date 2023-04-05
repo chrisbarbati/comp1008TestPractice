@@ -15,6 +15,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 public class BankController implements Initializable{
         /*
@@ -27,15 +28,27 @@ public class BankController implements Initializable{
      * Variables to hold current customer, current account
      */
 
-    int currentCust, currentAccount;
+    private int currentCust, currentAccount = 1;
 
     ArrayList<Label> accountLabels = new ArrayList<>();
+
+    @FXML
+    private Button accountBackButton;
+
+    @FXML
+    private Button accountForwardButton;
+
+    @FXML
+    private TextField accountTypeField;
+
+    @FXML
+    private VBox accountsDisplayer;
 
     @FXML
     private ScrollPane accountsPane;
 
     @FXML
-    private VBox accountsDisplayer;
+    private Button addAccountButton;
 
     @FXML
     private Button addCustomerButton;
@@ -65,7 +78,25 @@ public class BankController implements Initializable{
     private ImageView customerImageView;
 
     @FXML
+    private TextField depositAmt;
+
+    @FXML
+    private Button depositConfirm;
+
+    @FXML
     private TextField dobTextField;
+
+    @FXML
+    private TextField eftAmount;
+
+    @FXML
+    private Button eftConfirmation;
+
+    @FXML
+    private TextField eftRecipientNum;
+
+    @FXML
+    private TextField eftSenderNum;
 
     @FXML
     private TextField firstNameTextField;
@@ -78,6 +109,15 @@ public class BankController implements Initializable{
 
     @FXML
     private TextField pinTextField;
+
+    @FXML
+    private Label selectedAcct;
+
+    @FXML
+    private TextField withdrawalAmt;
+
+    @FXML
+    private Button withdrawalConfirm;
 
     private void addCustomer(){
         System.out.println("add customer");
@@ -93,17 +133,29 @@ public class BankController implements Initializable{
     }
 
     private void nextButtonPressed(){
-        System.out.println("next customer");
-        currentCust += 1;
-        updateCustomer();
-        updateAccounts();
+        if(currentCust < (Customer.customersList.size() - 1)) {
+            System.out.println("next customer");
+            currentCust += 1;
+            updateCustomer();
+            updateAccounts();
+        }
     }
 
     private void backButtonPressed(){
-        System.out.println("previous customer");
-        currentCust -= 1;
-        updateCustomer();
-        updateAccounts();
+        if(currentCust > 1) {
+            System.out.println("previous customer");
+            currentCust -= 1;
+            updateCustomer();
+            updateAccounts();
+        }
+    }
+
+    private void acctForward(){
+        System.out.println("Account forward");
+    }
+
+    private void acctBack(){
+        System.out.println("Account back");
     }
 
     private void updateCustomer(){
@@ -116,10 +168,32 @@ public class BankController implements Initializable{
     private void updateAccounts(){
         accountLabels.clear();
         for(Account account : Customer.customersList.get(currentCust).customersAccounts){
-            String accountInformation = "Account Number: " + account.getAccountNumber() + " Type: " + account.getAccountType();
+            String accountInformation = "Account Number: " + account.getAccountNumber() + " Type: " + account.getAccountType() + "Balance: " + account.getBalance();
             accountLabels.add(new Label(accountInformation));
+            /* Revisit this. Used to highlight the currently selected acct in the scrollpane.
+            if(account.getAccountNumber() == 1) {
+                accountLabels.get(accountLabels.size()).setStyle("-fx-color-label-visible: #000000;");
+            } */
+
         }
         accountsDisplayer.getChildren().setAll(accountLabels);
+    }
+
+    private void electronicFundsTransfer(){
+        Account.fundsTransfer(Double.parseDouble(eftAmount.getText()),
+                Integer.parseInt(eftSenderNum.getText()),
+                Integer.parseInt(eftRecipientNum.getText()));
+        System.out.println("EFT Confirmed");
+    }
+
+    private void deposit(){
+        Account.accountsList.get(currentAccount).deposit(Double.parseDouble(depositAmt.getText()));
+        System.out.println("Deposit");
+    }
+
+    private void withdraw(){
+        Account.accountsList.get(currentAccount).withdraw(Double.parseDouble(withdrawalAmt.getText()));
+        System.out.println("Withdrawal");
     }
 
     public BankController() {
@@ -165,11 +239,19 @@ public class BankController implements Initializable{
          */
 
         /**
-         * Set the listeners for the buttons
+         * Set the listeners for the buttons. To keep things clean, each calls it's own separate function
+         * with the code within. May be more efficient to just call the functions in the other class directly,
+         * but will investigate that later.
          */
         addCustomerButton.setOnMouseClicked(event -> addCustomer());
         forwardButton.setOnMouseClicked(event -> nextButtonPressed());
         backButton.setOnMouseClicked(event -> backButtonPressed());
+        accountForwardButton.setOnMouseClicked(event -> acctForward());
+        accountBackButton.setOnMouseClicked(event -> acctBack());
+        eftConfirmation.setOnMouseClicked(event -> electronicFundsTransfer());
+        depositConfirm.setOnMouseClicked(event -> deposit());
+        withdrawalConfirm.setOnMouseClicked(event -> withdraw());
+        addAccountButton.setOnMouseClicked(event -> addCustomer());
 
         /**
          * Instantiate some test customers (add image functionality later).
@@ -184,11 +266,6 @@ public class BankController implements Initializable{
                 "742 Evergreen Terrace", "01 01 1996"));
 
         Customer.customersList.get(1).openAccount("Chequing");
-        Customer.customersList.get(1).openAccount("Savings");
-        Customer.customersList.get(1).openAccount("TFSA");
-        Customer.customersList.get(1).openAccount("Savings");
-        Customer.customersList.get(1).openAccount("Savings");
-
 
         //Create a new customer object "Michael" and store in customer list
         Customer.customersList.add(new Customer(Customer.customersList.size(),4321, "Michael", "Baker",
@@ -205,6 +282,6 @@ public class BankController implements Initializable{
         custAddressLabel.setText("Address: " + Customer.customersList.get(1).getAddress());
         custDOBLabel.setText(Customer.customersList.get(1).getDateOfBirth());
 
-
+        updateAccounts();
     }
 }

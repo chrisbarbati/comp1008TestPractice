@@ -83,7 +83,7 @@ public class Account {
         System.out.println("Account Balance " + String.format("$%.2f", balance) + "\n");
     }
 
-    public void fundsTransfer(double amount, int sender, int recipient){
+    public static void fundsTransfer(double amount, int sender, int recipient){
         //Update recipient account balance
         accountsList.get(recipient).setBalance(accountsList.get(recipient).getBalance() + amount);
 
