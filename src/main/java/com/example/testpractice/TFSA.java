@@ -4,6 +4,12 @@ public class TFSA extends Account{
     private static double interestRate = 0.05;
     private double contributionLimit;
 
+    public String getAccountType() {
+        return accountType;
+    }
+
+    private static String accountType = "TFSA";
+
     public TFSA(int customerNumber) {
         super(customerNumber);
     }

@@ -9,6 +9,12 @@ public class Account {
     private double balance;
     private int accountHolder;
 
+    public String getAccountType() {
+        return accountType;
+    }
+
+    private String accountType;
+
     /**
      * Master ArrayList of all accounts.
      */
