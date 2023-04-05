@@ -1,7 +1,6 @@
 package com.example.testpractice;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayList;
 
 public class Account {
     /***
@@ -10,20 +9,21 @@ public class Account {
     private double balance;
     private int accountHolder;
 
-    private int accountNumber = Main.accounts.size();
-    private String accountType;
+    /**
+     * Master ArrayList of all accounts.
+     */
+    static ArrayList<Account> accountsList = new ArrayList<>();
+    private int accountNumber = accountsList.size();
 
-    public Account(int customerNumber, String accountType) {
-        setBalance(balance);
+    public Account(int customerNumber) {
+        //Balance starts at zero
+        setBalance(0);
+
+        //Each account is numbered according to it's List index
         setAccountNumber(accountNumber);
-        setAccountHolder(customerNumber);
-        setAccountType(accountType);
 
-        //Only prints for account numbers > 0, so no output is printed for dummy account.
-        if(customerNumber > 0) {
-            System.out.println("New account created. \nAccount Number: " + accountNumber + "\nAccount Holder: "
-                    + accountHolder + " \nBalance: " + String.format("$%.2f", balance) + " \nAccount Type: " + accountType + "\n\n");
-        }
+        //One customer can hold multiple accounts
+        setAccountHolder(customerNumber);
     }
 
     public double getBalance() {
@@ -41,7 +41,6 @@ public class Account {
     public int getAccountNumber() {
         return accountNumber;
     }
-
 
     /**
      *
@@ -66,36 +65,6 @@ public class Account {
         this.accountHolder = customerNumber;
     }
 
-    /**
-     * To add a new type of account, add it to this list, otherwise an exception will be thrown.
-     * @return Returns valid account types
-     */
-    private static List<String> getValidAccountTypes()
-    {
-        return Arrays.asList("chequing", "savings", "tfsa");
-    }
-
-    public String getAccountType() {
-        return accountType;
-    }
-
-    /**
-     *
-     * @param accountType represents the type of account. Chequing, savings, TFSA, etc.
-     */
-    public void setAccountType(String accountType) {
-        accountType = accountType.toLowerCase();
-
-        List<String> validAccountTypes = getValidAccountTypes();
-        if(validAccountTypes.contains(accountType)) {
-            this.accountType = accountType;
-        }
-        else{
-            throw new IllegalArgumentException(accountType + " is not a valid account type. Options are " +
-                    "Chequing, Savings, TFSA");
-        }
-    }
-
     public void deposit(double amount){
         balance += amount;
         System.out.println("Deposit of " + String.format("$%.2f", amount) + " is processed.");
@@ -110,16 +79,16 @@ public class Account {
 
     public void fundsTransfer(double amount, int sender, int recipient){
         //Update recipient account balance
-        Main.accounts.get(recipient).setBalance(Main.accounts.get(recipient).getBalance() + amount);
+        accountsList.get(recipient).setBalance(accountsList.get(recipient).getBalance() + amount);
 
         //Update sender account balance
-        Main.accounts.get(sender).setBalance(Main.accounts.get(sender).getBalance() - amount);
+        accountsList.get(sender).setBalance(accountsList.get(sender).getBalance() - amount);
 
         //Print output to console
         System.out.println("Electronic funds transfer completed.");
-        System.out.println("Recipient account " + Main.accounts.get(recipient).getAccountNumber() + " credited " + String.format("$%.2f", amount)
-                + ", new balance " + String.format("$%.2f", Main.accounts.get(recipient).getBalance()));
-        System.out.println("Sender account " + Main.accounts.get(sender).getAccountNumber() + " debited " + String.format("$%.2f", amount)
-                + ", new balance " + String.format("$%.2f", Main.accounts.get(sender).getBalance()));
+        System.out.println("Recipient account " + accountsList.get(recipient).getAccountNumber() + " credited " + String.format("$%.2f", amount)
+                + ", new balance " + String.format("$%.2f", accountsList.get(recipient).getBalance()));
+        System.out.println("Sender account " + accountsList.get(sender).getAccountNumber() + " debited " + String.format("$%.2f", amount)
+                + ", new balance " + String.format("$%.2f", accountsList.get(sender).getBalance()));
     }
 }

@@ -1,9 +1,22 @@
 package com.example.testpractice;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Customer {
     /**
      * Bank customer class.
      */
+
+    /**
+     * List that holds each Customer object
+     */
+    static ArrayList<Customer> customersList = new ArrayList<>();
+
+    /**
+     * Instance List for each customer, that holds his / her accounts
+     */
+    ArrayList<Account> customersAccounts = new ArrayList<>();
     private int customerNumber, customerPIN;
     private String firstName, lastName, address, dateOfBirth;
 
@@ -98,6 +111,20 @@ public class Customer {
     }
 
     public void openAccount(String accountType){
-         Main.accounts.add(new Account(customerNumber, accountType));
+        //Add account to both accountList and customer's list
+        if(accountType == "Chequing"){
+            Account.accountsList.add(new Chequing(customerNumber));
+            this.customersAccounts.add(Account.accountsList.get(Account.accountsList.size() - 1));
+        }else if(accountType == "Savings"){
+            Account.accountsList.add(new Savings(customerNumber));
+            this.customersAccounts.add(Account.accountsList.get(Account.accountsList.size() - 1));
+        }else if(accountType == "TFSA"){
+            Account.accountsList.add(new TFSA(customerNumber));
+            this.customersAccounts.add(Account.accountsList.get(Account.accountsList.size() - 1));
+        }
+
+        //Diagnostics to check that lists point to same Account Objects
+        System.out.println(Account.accountsList.get(Account.accountsList.size() - 1));
+        System.out.println(this.customersAccounts.get(this.customersAccounts.size() - 1));
     }
 }

@@ -1,13 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" styleClass=".button" stylesheets="@style.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.testpractice.BankController">
    <children>
-      <Button layoutX="196.0" layoutY="29.0" mnemonicParsing="false" text="Button" />
-      <Button layoutX="196.0" layoutY="94.0" mnemonicParsing="false" text="Button" />
-      <Button layoutX="196.0" layoutY="152.0" mnemonicParsing="false" text="Button" />
+      <HBox prefHeight="805.0" prefWidth="1006.0">
+         <children>
+            <VBox prefHeight="800.0" prefWidth="500.0">
+               <children>
+                  <ImageView fx:id="customerImageView" fitHeight="400.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true" />
+                  <Label prefHeight="75.0" prefWidth="500.0" text="Customer Number" />
+                  <Label prefHeight="75.0" prefWidth="500.0" text="First name last name" />
+                  <Label prefHeight="75.0" prefWidth="500.0" text="Address" />
+                  <Label prefHeight="75.0" prefWidth="500.0" text="DOB" />
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="backButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="250.0" text="Back" />
+                        <Button fx:id="forwardButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="250.0" text="Forward" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox prefHeight="800.0" prefWidth="500.0">
+               <children>
+                  <ScrollPane prefHeight="400.0" prefWidth="500.0" />
+                  <HBox prefHeight="301.0" prefWidth="500.0">
+                     <children>
+                        <VBox prefHeight="300.0" prefWidth="250.0">
+                           <children>
+                              <Label prefHeight="60.0" prefWidth="250.0" text="First Name" />
+                              <Label prefHeight="60.0" prefWidth="250.0" text="Last Name" />
+                              <Label prefHeight="60.0" prefWidth="250.0" text="Address" />
+                              <Label prefHeight="60.0" prefWidth="250.0" text="Date of Birth" />
+                              <Label prefHeight="60.0" prefWidth="250.0" text="PIN" />
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="300.0" prefWidth="250.0">
+                           <children>
+                              <TextField prefHeight="60.0" prefWidth="250.0" />
+                              <TextField prefHeight="60.0" prefWidth="250.0" />
+                              <TextField prefHeight="60.0" prefWidth="250.0" />
+                              <TextField prefHeight="60.0" prefWidth="250.0" />
+                              <TextField prefHeight="60.0" prefWidth="250.0" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <Button fx:id="addCustomerButton" mnemonicParsing="false" prefHeight="100.0" prefWidth="500.0" text="Add Customer" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
    </children>
 </AnchorPane>
