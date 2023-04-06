@@ -163,6 +163,7 @@ public class BankController implements Initializable{
     private void acctForward(){
         if(currentAccount < (customersAcctNums.get(customersAcctNums.size() - 1))) {
             System.out.println("next account");
+            System.out.println("current account: " + currentAccount);
             currentAccount += 1;
             updateCustomer();
             updateAccounts();
@@ -172,6 +173,7 @@ public class BankController implements Initializable{
     private void acctBack(){
         if(currentAccount > customersAcctNums.get(0)) {
             System.out.println("previous account");
+            System.out.println("current account: " + currentAccount);
             currentAccount -= 1;
             updateCustomer();
             updateAccounts();
@@ -196,12 +198,12 @@ public class BankController implements Initializable{
 
         for(Account account : Customer.customersList.get(currentCust).customersAccounts){
             customersAcctNums.add(account.getAccountNumber());
+
             String accountInformation = "Account Number: " + account.getAccountNumber() + " Type: " + account.getAccountType() + " Balance: $" + account.getBalance();
             accountLabels.add(new Label(accountInformation));
             // Revisit this. Used to highlight the currently selected acct in the scrollpane.
             if(account.getAccountNumber() == currentAccount) {
-                System.out.println("TEST");
-                accountLabels.get(accountLabels.size() - 1).setStyle("-fx-font-style: bold; -fx-font-size: 120%; -fx-background-color: #CCCCCC;");
+                accountLabels.get(accountLabels.size() - 1).setStyle("-fx-font-weight: bold; -fx-font-size: 120%; -fx-background-color: #CCCCCC;");
             }
         }
 
@@ -210,7 +212,7 @@ public class BankController implements Initializable{
          * back with the buttons.
          */
 
-        if(!customersAcctNums.contains(currentAccount)){
+        if(currentAccount > customersAcctNums.size()){
             currentAccount = customersAcctNums.get(0);
         }
 
@@ -305,8 +307,7 @@ public class BankController implements Initializable{
 
         Customer.customersList.get(1).openAccount("Chequing");
         Customer.customersList.get(1).openAccount("Savings");
-        Customer.customersList.get(1).openAccount("Savings");
-        Customer.customersList.get(1).openAccount("TFSA");
+
 
         //Create a new customer object "Michael" and store in customer list
         Customer.customersList.add(new Customer(Customer.customersList.size(),4321, "Michael", "Baker",
@@ -314,6 +315,10 @@ public class BankController implements Initializable{
 
         Customer.customersList.get(2).openAccount("Chequing");
         Customer.customersList.get(2).openAccount("Savings");
+
+        Customer.customersList.get(1).openAccount("Savings");
+        Customer.customersList.get(1).openAccount("TFSA");
+
         Customer.customersList.get(2).openAccount("Chequing");
         Customer.customersList.get(2).openAccount("Savings");
 
