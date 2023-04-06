@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -14,6 +15,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
@@ -31,6 +34,13 @@ public class BankController implements Initializable{
     private int currentCust, currentAccount = 1;
 
     ArrayList<Label> accountLabels = new ArrayList<>();
+
+    /**
+     * ArrayList to hold the integer account numbers of each account belonging to the current
+     * customer. Must use Integer, since Java won't let me store int primitive in an ArrayList
+     * & since it is not of a fixed length, a typical array will not suffice.
+     */
+    ArrayList<Integer> customersAcctNums = new ArrayList<>();
 
     @FXML
     private Button accountBackButton;
@@ -151,11 +161,22 @@ public class BankController implements Initializable{
     }
 
     private void acctForward(){
-        System.out.println("Account forward");
+        if(currentAccount < (customersAcctNums.get(customersAcctNums.size() - 1))) {
+            System.out.println("next account");
+            currentAccount += 1;
+            updateCustomer();
+            updateAccounts();
+        }
     }
 
     private void acctBack(){
-        System.out.println("Account back");
+        if(currentAccount > customersAcctNums.get(0)) {
+            System.out.println("previous account");
+            currentAccount -= 1;
+            updateCustomer();
+            updateAccounts();
+        }
+
     }
 
     private void updateCustomer(){
@@ -163,19 +184,36 @@ public class BankController implements Initializable{
         custNameLabel.setText("Name: " + Customer.customersList.get(currentCust).getFirstName() + " " + Customer.customersList.get(currentCust).getLastName());
         custAddressLabel.setText("Address: " + Customer.customersList.get(currentCust).getAddress());
         custDOBLabel.setText(Customer.customersList.get(currentCust).getDateOfBirth());
+
+        updateAccounts();
     }
 
     private void updateAccounts(){
+        customersAcctNums.clear();
         accountLabels.clear();
-        for(Account account : Customer.customersList.get(currentCust).customersAccounts){
-            String accountInformation = "Account Number: " + account.getAccountNumber() + " Type: " + account.getAccountType() + "Balance: " + account.getBalance();
-            accountLabels.add(new Label(accountInformation));
-            /* Revisit this. Used to highlight the currently selected acct in the scrollpane.
-            if(account.getAccountNumber() == 1) {
-                accountLabels.get(accountLabels.size()).setStyle("-fx-color-label-visible: #000000;");
-            } */
 
+        Collections.sort(customersAcctNums);
+
+        for(Account account : Customer.customersList.get(currentCust).customersAccounts){
+            customersAcctNums.add(account.getAccountNumber());
+            String accountInformation = "Account Number: " + account.getAccountNumber() + " Type: " + account.getAccountType() + " Balance: $" + account.getBalance();
+            accountLabels.add(new Label(accountInformation));
+            // Revisit this. Used to highlight the currently selected acct in the scrollpane.
+            if(account.getAccountNumber() == currentAccount) {
+                System.out.println("TEST");
+                accountLabels.get(accountLabels.size() - 1).setStyle("-fx-font-style: bold; -fx-font-size: 120%; -fx-background-color: #CCCCCC;");
+            }
         }
+
+        /**
+         * Put all of the customer's account numbers into their own List, so we can move forward and
+         * back with the buttons.
+         */
+
+        if(!customersAcctNums.contains(currentAccount)){
+            currentAccount = customersAcctNums.get(0);
+        }
+
         accountsDisplayer.getChildren().setAll(accountLabels);
     }
 
@@ -266,11 +304,17 @@ public class BankController implements Initializable{
                 "742 Evergreen Terrace", "01 01 1996"));
 
         Customer.customersList.get(1).openAccount("Chequing");
+        Customer.customersList.get(1).openAccount("Savings");
+        Customer.customersList.get(1).openAccount("Savings");
+        Customer.customersList.get(1).openAccount("TFSA");
 
         //Create a new customer object "Michael" and store in customer list
         Customer.customersList.add(new Customer(Customer.customersList.size(),4321, "Michael", "Baker",
                 "247 Evergreen Terrace", "01 01 1998"));
 
+        Customer.customersList.get(2).openAccount("Chequing");
+        Customer.customersList.get(2).openAccount("Savings");
+        Customer.customersList.get(2).openAccount("Chequing");
         Customer.customersList.get(2).openAccount("Savings");
 
 
@@ -282,6 +326,10 @@ public class BankController implements Initializable{
         custAddressLabel.setText("Address: " + Customer.customersList.get(1).getAddress());
         custDOBLabel.setText(Customer.customersList.get(1).getDateOfBirth());
 
+        currentCust = 1;
+        currentAccount = 1;
+
         updateAccounts();
+        updateCustomer();
     }
 }
