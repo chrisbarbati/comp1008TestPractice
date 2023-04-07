@@ -308,21 +308,21 @@ public class BankController implements Initializable{
          * Index zero is filled with a dummy-account, to make indexing more user friendly. This account is not
          * accessible to the end-user
          */
-        Customer.customersList.add(new Customer(new Image("portrait1.jpg"), Customer.customersList.size(), 0000, "--", "--",
-                "--", "--"));
+        Customer.customersList.add(new Customer(new Image("portrait1.jpg"), Customer.customersList.size(), 0001, "Fictional", "Fred",
+                "742 Evergreen Terrace", "01-01-1990"));
         Customer.customersList.get(0).openAccount("Chequing");
 
         //Create a new customer object "Christian", and store in customer list
-        Customer.customersList.add(new Customer(new Image("portrait1.jpg"), Customer.customersList.size(), 1234, "Christian", "Barbati",
-                "742 Evergreen Terrace", "01 01 1996"));
+        Customer.customersList.add(new Customer(new Image("portrait1.jpg"), Customer.customersList.size(), 1525, "Christian", "Barbati",
+                "742 Evergreen Terrace", "06-22-1998"));
 
         //Create a new customer object "Jenny" and store in customer list
-        Customer.customersList.add(new Customer(new Image("portrait2.jpg"), Customer.customersList.size(),4321, "Jenny", "Baker",
-                "247 Evergreen Terrace", "01 01 1998"));
+        Customer.customersList.add(new Customer(new Image("portrait2.jpg"), Customer.customersList.size(),9486, "Jenny", "Baker",
+                "247 Evergreen Terrace", "12-12-1998"));
 
         //Create a new customer object "Michael" and store in customer list
-        Customer.customersList.add(new Customer(new Image("portrait3.jpg"), Customer.customersList.size(),4321, "Michael", "Smith",
-                "471 Evergreen Terrace", "01 01 1998"));
+        Customer.customersList.add(new Customer(new Image("portrait3.jpg"), Customer.customersList.size(),3854, "Michael", "Smith",
+                "471 Evergreen Terrace", "07-15-1998"));
 
         /**
          * Open some accounts for our customers. Added in random order to demonstrate that forward and back buttons

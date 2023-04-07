@@ -2,6 +2,10 @@ package com.example.testpractice;
 
 import javafx.scene.image.Image;
 
+import java.text.FieldPosition;
+import java.text.ParsePosition;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +31,16 @@ public class Customer {
     private String firstName, lastName, address, dateOfBirth;
     private Image customerImage;
 
+    /**
+     * Default constructor. Requires image, customer number, PIN, names (first and last), address, DOB
+     * @param customerImage
+     * @param customerNumber
+     * @param customerPIN
+     * @param firstName
+     * @param lastName
+     * @param address
+     * @param dateOfBirth
+     */
     public Customer(Image customerImage, int customerNumber, int customerPIN, String firstName, String lastName, String address, String dateOfBirth){
         setCustomerImage(customerImage);
 
@@ -62,11 +76,15 @@ public class Customer {
     }
 
     /**
-     *
+     *  Customer numbers cannot be negative.
      * @param customerNumber
      */
     public void setCustomerNumber(int customerNumber) {
-        this.customerNumber = customerNumber;
+        if(customerNumber >= 0){
+            this.customerNumber = customerNumber;
+        }else{
+            throw new IllegalArgumentException(customerNumber + " received. Customer numbers must be zero or greater.");
+        }
     }
 
     public int getCustomerPIN() {
@@ -74,11 +92,17 @@ public class Customer {
     }
 
     /**
-     *
-     * @param customerPIN must be four digits. Must be numeric only.
+     * @param customerPIN must be 4 digits long, must be greater than zero, must not be one of the common passwords.
      */
     public void setCustomerPIN(int customerPIN) {
-        this.customerPIN = customerPIN;
+        if(customerPIN > 0 && customerPIN < 9999 ){
+            this.customerPIN = customerPIN;
+        }else if(customerPIN == 1234 || customerPIN == 4321 || customerPIN == 0000){
+            throw new IllegalArgumentException(customerPIN + " is not a secure PIN. Please try again.");
+        }
+        else{
+            throw new IllegalArgumentException(customerPIN + " received. Customer PIN must be in the range 0 - 9999");
+        }
     }
 
     public String getFirstName() {
@@ -86,11 +110,15 @@ public class Customer {
     }
 
     /**
-     *
      * @param firstName customer's first name. Must have more than two non-whitespace characters.
      */
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        firstName = firstName.trim();
+        if(firstName.length() > 2) {
+            this.firstName = firstName;
+        }else{
+            throw new IllegalArgumentException(firstName + " is not a valid input. Name must have at least two non-whitespace characters");
+        }
     }
 
     public String getLastName() {
@@ -98,11 +126,15 @@ public class Customer {
     }
 
     /**
-     *
      * @param lastName customer's last name. Must have more than two non-whitespace characters.
      */
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        lastName = lastName.trim();
+        if(lastName.length() > 2) {
+            this.lastName = lastName;
+        }else{
+            throw new IllegalArgumentException(lastName + " is not a valid input. Name must have at least two non-whitespace characters");
+        }
     }
 
     public String getAddress() {
@@ -111,11 +143,15 @@ public class Customer {
 
     /**
      *
-     * @param address customer's address. Maybe break this into multiple fields later (house number, street name,
-     *                province, etc). For now K.I.S.S.
+     * @param address customer's address.
+     *
+     *                Regex Pattern: Must not have special characters. Alphanumeric only. Length and format not
+     *                tested, due to variety of addresses.
+     *
+     *                Come back to this later and add Regex
      */
     public void setAddress(String address) {
-        this.address = address;
+            this.address = address;
     }
 
     public String getDateOfBirth() {
@@ -124,11 +160,18 @@ public class Customer {
 
     /**
      *
-     * @param dateOfBirth customer's DOB. Maybe break this into multiple fields later (day, month, year). For now,
-     *                    K.I.S.S
+     * @param dateOfBirth customer's DOB. Must take form MM-DD-YYYY. Found that the Date import has some useful functions for this
      */
     public void setDateOfBirth(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+        LocalDate dob;
+        DateTimeFormatter dobFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
+        try{
+            dob = LocalDate.parse(dateOfBirth, dobFormat);
+        }catch (Exception e){
+            throw new IllegalArgumentException("Invalid date. Date must take format MM-DD-YYYY, and must have a valid day and month.");
+        }
+
     }
 
     /**
