@@ -1,5 +1,7 @@
 package com.example.testpractice;
 
+import javafx.scene.image.Image;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +22,11 @@ public class Customer {
     private int customerNumber, customerPIN;
     private String firstName, lastName, address, dateOfBirth;
 
-    public Customer(int customerNumber, int customerPIN, String firstName, String lastName, String address, String dateOfBirth){
+    private Image customerImage;
+
+    public Customer(Image customerImage, int customerNumber, int customerPIN, String firstName, String lastName, String address, String dateOfBirth){
+        setCustomerImage(customerImage);
+
         setCustomerNumber(customerNumber);
 
         setCustomerPIN(customerPIN);
@@ -38,6 +44,14 @@ public class Customer {
             System.out.println("\nNew customer created. \nCustomer Number: " + customerNumber + " \nPIN: " + customerPIN
                     + " \nName: " + firstName + " " + lastName + " \nAddress: " + address + " \nDOB: " + dateOfBirth + "\n");
         }
+    }
+
+    public Image getCustomerImage() {
+        return customerImage;
+    }
+
+    public void setCustomerImage(Image customerImage) {
+        this.customerImage = customerImage;
     }
 
     public int getCustomerNumber() {
@@ -112,19 +126,17 @@ public class Customer {
 
     public void openAccount(String accountType){
         //Add account to both accountList and customer's list
-        if(accountType == "Chequing"){
+
+        if(accountType.equals("Chequing")){
             Account.accountsList.add(new Chequing(customerNumber));
             this.customersAccounts.add(Account.accountsList.get(Account.accountsList.size() - 1));
-        }else if(accountType == "Savings"){
+        }else if(accountType.equals("Savings")){
             Account.accountsList.add(new Savings(customerNumber));
             this.customersAccounts.add(Account.accountsList.get(Account.accountsList.size() - 1));
-        }else if(accountType == "TFSA"){
+        }else if(accountType.equals("TFSA")){
             Account.accountsList.add(new TFSA(customerNumber));
             this.customersAccounts.add(Account.accountsList.get(Account.accountsList.size() - 1));
         }
 
-        //Diagnostics to check that lists point to same Account Objects
-        System.out.println(Account.accountsList.get(Account.accountsList.size() - 1));
-        System.out.println(this.customersAccounts.get(this.customersAccounts.size() - 1));
     }
 }

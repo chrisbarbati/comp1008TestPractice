@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -85,6 +86,9 @@ public class BankController implements Initializable{
     private Label custNumLabel;
 
     @FXML
+    private TextField customerImageSrc;
+
+    @FXML
     private ImageView customerImageView;
 
     @FXML
@@ -107,6 +111,9 @@ public class BankController implements Initializable{
 
     @FXML
     private TextField eftSenderNum;
+
+    @FXML
+    private Label errorOutput;
 
     @FXML
     private TextField firstNameTextField;
@@ -133,6 +140,7 @@ public class BankController implements Initializable{
         System.out.println("add customer");
         Customer.customersList.add(
                 new Customer(
+                        new Image(customerImageSrc.getText()),
                         Customer.customersList.size(),
                         Integer.parseInt(pinTextField.getText()),
                         firstNameTextField.getText(),
@@ -140,6 +148,7 @@ public class BankController implements Initializable{
                         addressTextField.getText(),
                         dobTextField.getText()
                 ));
+        nextButtonPressed();
     }
 
     private void nextButtonPressed(){
@@ -161,24 +170,29 @@ public class BankController implements Initializable{
     }
 
     private void acctForward(){
-        if(currentAccount < (customersAcctNums.get(customersAcctNums.size() - 1))) {
+        if(currentAccount < customersAcctNums.get(customersAcctNums.size() - 1)) {
             System.out.println("next account");
-            System.out.println("current account: " + currentAccount);
             currentAccount += 1;
             updateCustomer();
             updateAccounts();
         }
+        while(!customersAcctNums.contains(currentAccount)){
+            currentAccount++;
+        }
+        updateAccounts();
     }
 
     private void acctBack(){
         if(currentAccount > customersAcctNums.get(0)) {
             System.out.println("previous account");
-            System.out.println("current account: " + currentAccount);
             currentAccount -= 1;
             updateCustomer();
             updateAccounts();
         }
-
+        while(!customersAcctNums.contains(currentAccount)){
+            currentAccount--;
+        }
+        updateAccounts();
     }
 
     private void updateCustomer(){
@@ -186,35 +200,26 @@ public class BankController implements Initializable{
         custNameLabel.setText("Name: " + Customer.customersList.get(currentCust).getFirstName() + " " + Customer.customersList.get(currentCust).getLastName());
         custAddressLabel.setText("Address: " + Customer.customersList.get(currentCust).getAddress());
         custDOBLabel.setText(Customer.customersList.get(currentCust).getDateOfBirth());
+        customerImageView.setImage(Customer.customersList.get(currentCust).getCustomerImage());
 
-        updateAccounts();
+        //System.out.println(Customer.customersList.get(currentCust));
     }
 
     private void updateAccounts(){
         customersAcctNums.clear();
         accountLabels.clear();
 
-        Collections.sort(customersAcctNums);
-
         for(Account account : Customer.customersList.get(currentCust).customersAccounts){
             customersAcctNums.add(account.getAccountNumber());
-
             String accountInformation = "Account Number: " + account.getAccountNumber() + " Type: " + account.getAccountType() + " Balance: $" + account.getBalance();
             accountLabels.add(new Label(accountInformation));
             // Revisit this. Used to highlight the currently selected acct in the scrollpane.
             if(account.getAccountNumber() == currentAccount) {
-                accountLabels.get(accountLabels.size() - 1).setStyle("-fx-font-weight: bold; -fx-font-size: 120%; -fx-background-color: #CCCCCC;");
+                accountLabels.get(accountLabels.size() - 1).setStyle("-fx-background-color: #CCCCCC;");
             }
-        }
 
-        /**
-         * Put all of the customer's account numbers into their own List, so we can move forward and
-         * back with the buttons.
-         */
-
-        if(currentAccount > customersAcctNums.size()){
-            currentAccount = customersAcctNums.get(0);
         }
+        Collections.sort(customersAcctNums);
 
         accountsDisplayer.getChildren().setAll(accountLabels);
     }
@@ -224,16 +229,25 @@ public class BankController implements Initializable{
                 Integer.parseInt(eftSenderNum.getText()),
                 Integer.parseInt(eftRecipientNum.getText()));
         System.out.println("EFT Confirmed");
+        updateAccounts();
     }
 
     private void deposit(){
         Account.accountsList.get(currentAccount).deposit(Double.parseDouble(depositAmt.getText()));
         System.out.println("Deposit");
+        updateAccounts();
     }
 
     private void withdraw(){
         Account.accountsList.get(currentAccount).withdraw(Double.parseDouble(withdrawalAmt.getText()));
         System.out.println("Withdrawal");
+        updateAccounts();
+    }
+
+    private void addAccount(){
+        Customer.customersList.get(currentCust).openAccount(accountTypeField.getText());
+        updateCustomer();
+        updateAccounts();
     }
 
     public BankController() {
@@ -241,42 +255,6 @@ public class BankController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resourceBundle) {
-        /**
-         * List is zero-referenced, but accounts and customer numbers should start at one.
-         * Fix - initiate a dummy account and customer at 0, so that all numbers can be referenced directly.
-         */
-
-        /* Temporarily commenting out test code to make things cleaner
-        Customer.customersList.add(new Customer(Customer.customersList.size(), 0000, "--", "--",
-                "--", "--"));
-        Account.accountsList.add(new Account(Account.accountsList.size()));
-
-        //Create a new customer object "David", and store in customer list
-        Customer.customersList.add(new Customer(Customer.customersList.size(), 1234, "David", "Smith",
-                "742 Evergreen Terrace", "01 01 1996"));
-
-        //Create a new customer object "Michael" and store in customer list
-        Customer.customersList.add(new Customer(Customer.customersList.size(),4321, "Michael", "Baker",
-                "247 Evergreen Terrace", "01 01 1998"));
-
-        //Create new accounts for the instantiated objects
-        Customer.customersList.get(1).openAccount("Chequing");
-        Customer.customersList.get(1).openAccount("Savings");
-        Customer.customersList.get(2).openAccount("Chequing");
-        Customer.customersList.get(2).openAccount("TFSA");
-
-        //Balance check function
-        System.out.println("The balance of account 1 is " + String.format("$%.2f", Account.accountsList.get(1).getBalance()) + "\n");
-
-        //Deposit and withdrawal functions
-        double amount = 20;
-        Account.accountsList.get(0).deposit(amount);
-        amount = 10;
-        Account.accountsList.get(0).withdraw(amount);
-
-        //Transfer function
-        Account.accountsList.get(0).fundsTransfer(100.576, 1, 2);
-         */
 
         /**
          * Set the listeners for the buttons. To keep things clean, each calls it's own separate function
@@ -291,36 +269,39 @@ public class BankController implements Initializable{
         eftConfirmation.setOnMouseClicked(event -> electronicFundsTransfer());
         depositConfirm.setOnMouseClicked(event -> deposit());
         withdrawalConfirm.setOnMouseClicked(event -> withdraw());
-        addAccountButton.setOnMouseClicked(event -> addCustomer());
+        addAccountButton.setOnMouseClicked(event -> addAccount());
 
         /**
          * Instantiate some test customers (add image functionality later).
-         * Index zero is filled with a dummy-account, to make indexing more user friendly
+         * Index zero is filled with a dummy-account, to make indexing more user friendly. This account is not
+         * accessible to the end-user
          */
-        Customer.customersList.add(new Customer(Customer.customersList.size(), 0000, "--", "--",
+        Customer.customersList.add(new Customer(new Image("portrait1.jpg"), Customer.customersList.size(), 0000, "--", "--",
                 "--", "--"));
-        Account.accountsList.add(new Account(Account.accountsList.size()));
+        Customer.customersList.get(0).openAccount("Chequing");
 
         //Create a new customer object "David", and store in customer list
-        Customer.customersList.add(new Customer(Customer.customersList.size(), 1234, "David", "Smith",
+        Customer.customersList.add(new Customer(new Image("portrait1.jpg"), Customer.customersList.size(), 1234, "Christian", "Barbati",
                 "742 Evergreen Terrace", "01 01 1996"));
+
+        //Create a new customer object "Jenny" and store in customer list
+        Customer.customersList.add(new Customer(new Image("portrait2.jpg"), Customer.customersList.size(),4321, "Jenny", "Baker",
+                "247 Evergreen Terrace", "01 01 1998"));
+
+        //Create a new customer object "Michael" and store in customer list
+        Customer.customersList.add(new Customer(new Image("portrait3.jpg"), Customer.customersList.size(),4321, "Michael", "Smith",
+                "471 Evergreen Terrace", "01 01 1998"));
 
         Customer.customersList.get(1).openAccount("Chequing");
         Customer.customersList.get(1).openAccount("Savings");
-
-
-        //Create a new customer object "Michael" and store in customer list
-        Customer.customersList.add(new Customer(Customer.customersList.size(),4321, "Michael", "Baker",
-                "247 Evergreen Terrace", "01 01 1998"));
+        Customer.customersList.get(2).openAccount("Savings");
+        Customer.customersList.get(2).openAccount("TFSA");
+        Customer.customersList.get(3).openAccount("Savings");
 
         Customer.customersList.get(2).openAccount("Chequing");
         Customer.customersList.get(2).openAccount("Savings");
-
-        Customer.customersList.get(1).openAccount("Savings");
-        Customer.customersList.get(1).openAccount("TFSA");
-
-        Customer.customersList.get(2).openAccount("Chequing");
-        Customer.customersList.get(2).openAccount("Savings");
+        Customer.customersList.get(1).openAccount("Chequing");
+        Customer.customersList.get(3).openAccount("Savings");
 
 
         /**
@@ -330,10 +311,13 @@ public class BankController implements Initializable{
         custNameLabel.setText("Name: " + Customer.customersList.get(1).getFirstName() + " " + Customer.customersList.get(1).getLastName());
         custAddressLabel.setText("Address: " + Customer.customersList.get(1).getAddress());
         custDOBLabel.setText(Customer.customersList.get(1).getDateOfBirth());
+        customerImageView.setImage(Customer.customersList.get(0).getCustomerImage());
 
+        /**
+         * Set current customer and accounts to 1 each, and call the update functions
+         */
         currentCust = 1;
         currentAccount = 1;
-
         updateAccounts();
         updateCustomer();
     }
