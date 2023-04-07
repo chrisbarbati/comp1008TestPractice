@@ -136,6 +136,10 @@ public class BankController implements Initializable{
     @FXML
     private Button withdrawalConfirm;
 
+
+    /**
+     * Instantiates a new customer based on user input, and then adds it to the list of customers
+     */
     private void addCustomer(){
         System.out.println("add customer");
         Customer.customersList.add(
@@ -151,6 +155,9 @@ public class BankController implements Initializable{
         nextButtonPressed();
     }
 
+    /**
+     * Cycles to the next customer in the list
+     */
     private void nextButtonPressed(){
         if(currentCust < (Customer.customersList.size() - 1)) {
             System.out.println("next customer");
@@ -160,6 +167,9 @@ public class BankController implements Initializable{
         }
     }
 
+    /**
+     * Cycles to the previous customer in the list
+     */
     private void backButtonPressed(){
         if(currentCust > 1) {
             System.out.println("previous customer");
@@ -169,6 +179,9 @@ public class BankController implements Initializable{
         }
     }
 
+    /**
+     * Cycles to the next account in the customer's account list
+     */
     private void acctForward(){
         if(currentAccount < customersAcctNums.get(customersAcctNums.size() - 1)) {
             System.out.println("next account");
@@ -182,6 +195,9 @@ public class BankController implements Initializable{
         updateAccounts();
     }
 
+    /**
+     * Cyles to the previous account in the customer's account list
+     */
     private void acctBack(){
         if(currentAccount > customersAcctNums.get(0)) {
             System.out.println("previous account");
@@ -195,16 +211,20 @@ public class BankController implements Initializable{
         updateAccounts();
     }
 
+    /**
+     * Updates the labels and image in the view for the customer
+     */
     private void updateCustomer(){
         custNumLabel.setText("Customer Number: " + Integer.toString(Customer.customersList.get(currentCust).getCustomerNumber()));
         custNameLabel.setText("Name: " + Customer.customersList.get(currentCust).getFirstName() + " " + Customer.customersList.get(currentCust).getLastName());
         custAddressLabel.setText("Address: " + Customer.customersList.get(currentCust).getAddress());
         custDOBLabel.setText(Customer.customersList.get(currentCust).getDateOfBirth());
         customerImageView.setImage(Customer.customersList.get(currentCust).getCustomerImage());
-
-        //System.out.println(Customer.customersList.get(currentCust));
     }
 
+    /**
+     * Updates the information in the view for the customer's accounts
+     */
     private void updateAccounts(){
         customersAcctNums.clear();
         accountLabels.clear();
@@ -224,6 +244,9 @@ public class BankController implements Initializable{
         accountsDisplayer.getChildren().setAll(accountLabels);
     }
 
+    /**
+     * EFT function - accesses the EFT function in the Account class
+     */
     private void electronicFundsTransfer(){
         Account.fundsTransfer(Double.parseDouble(eftAmount.getText()),
                 Integer.parseInt(eftSenderNum.getText()),
@@ -232,18 +255,27 @@ public class BankController implements Initializable{
         updateAccounts();
     }
 
+    /**
+     * Deposit function - accesses the deposit function in the account class
+     */
     private void deposit(){
         Account.accountsList.get(currentAccount).deposit(Double.parseDouble(depositAmt.getText()));
         System.out.println("Deposit");
         updateAccounts();
     }
 
+    /**
+     * Withdrawal function - accesses the withdrawal function in the account class
+     */
     private void withdraw(){
         Account.accountsList.get(currentAccount).withdraw(Double.parseDouble(withdrawalAmt.getText()));
         System.out.println("Withdrawal");
         updateAccounts();
     }
 
+    /**
+     * Open account function - accesses the open account function in the account class
+     */
     private void addAccount(){
         Customer.customersList.get(currentCust).openAccount(accountTypeField.getText());
         updateCustomer();
@@ -272,7 +304,7 @@ public class BankController implements Initializable{
         addAccountButton.setOnMouseClicked(event -> addAccount());
 
         /**
-         * Instantiate some test customers (add image functionality later).
+         * Instantiate some test customers.
          * Index zero is filled with a dummy-account, to make indexing more user friendly. This account is not
          * accessible to the end-user
          */
@@ -280,7 +312,7 @@ public class BankController implements Initializable{
                 "--", "--"));
         Customer.customersList.get(0).openAccount("Chequing");
 
-        //Create a new customer object "David", and store in customer list
+        //Create a new customer object "Christian", and store in customer list
         Customer.customersList.add(new Customer(new Image("portrait1.jpg"), Customer.customersList.size(), 1234, "Christian", "Barbati",
                 "742 Evergreen Terrace", "01 01 1996"));
 
@@ -292,12 +324,15 @@ public class BankController implements Initializable{
         Customer.customersList.add(new Customer(new Image("portrait3.jpg"), Customer.customersList.size(),4321, "Michael", "Smith",
                 "471 Evergreen Terrace", "01 01 1998"));
 
+        /**
+         * Open some accounts for our customers. Added in random order to demonstrate that forward and back buttons
+         * function agnostic of list position
+         */
         Customer.customersList.get(1).openAccount("Chequing");
         Customer.customersList.get(1).openAccount("Savings");
         Customer.customersList.get(2).openAccount("Savings");
         Customer.customersList.get(2).openAccount("TFSA");
         Customer.customersList.get(3).openAccount("Savings");
-
         Customer.customersList.get(2).openAccount("Chequing");
         Customer.customersList.get(2).openAccount("Savings");
         Customer.customersList.get(1).openAccount("Chequing");
@@ -311,7 +346,7 @@ public class BankController implements Initializable{
         custNameLabel.setText("Name: " + Customer.customersList.get(1).getFirstName() + " " + Customer.customersList.get(1).getLastName());
         custAddressLabel.setText("Address: " + Customer.customersList.get(1).getAddress());
         custDOBLabel.setText(Customer.customersList.get(1).getDateOfBirth());
-        customerImageView.setImage(Customer.customersList.get(0).getCustomerImage());
+        customerImageView.setImage(Customer.customersList.get(1).getCustomerImage());
 
         /**
          * Set current customer and accounts to 1 each, and call the update functions

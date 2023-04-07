@@ -4,15 +4,9 @@ import java.util.ArrayList;
 
 public class Account {
     /***
-     * Bank account class.
+     * Bank account class. Instance variables
      */
     private double balance;
-    private int accountHolder;
-
-    public String getAccountType() {
-        return accountType;
-    }
-
     private String accountType;
 
     /**
@@ -21,15 +15,12 @@ public class Account {
     static ArrayList<Account> accountsList = new ArrayList<>();
     private int accountNumber = accountsList.size();
 
-    public Account(int customerNumber) {
+    public Account() {
         //Balance starts at zero
         setBalance(0);
 
         //Each account is numbered according to it's List index
         setAccountNumber(accountNumber);
-
-        //One customer can hold multiple accounts
-        setAccountHolder(customerNumber);
     }
 
     public double getBalance() {
@@ -37,11 +28,16 @@ public class Account {
     }
 
     /**
-     *
-     * @param balance represents account balance. Can be negative if account is overdrawn. Starts at zero
+     * Balance starts at zero. This method is not accessed in normal use (usually one would use withdraw or deposit).
+     * Negative balances are rejected.
+     * @param balance
      */
     public void setBalance(double balance) {
-        this.balance = balance;
+        if(balance >= 0){
+            this.balance = balance;
+        }else{
+            throw new IllegalArgumentException(balance + " received. Accounts cannot be set to a balance below zero");
+        }
     }
 
     public int getAccountNumber() {
@@ -52,49 +48,80 @@ public class Account {
      *
      * @param accountNumber represents next account number to be assigned. Passed from Main, using the
      *                      size of the accounts ArrayList to determine the next free account number.
+     *                      Must be greater than or equal to zero.
      */
     public void setAccountNumber(int accountNumber) {
-        this.accountNumber = accountNumber;
-    }
-
-    public int getAccountHolder() {
-        return accountHolder;
+        if(accountNumber >= 0) {
+            this.accountNumber = accountNumber;
+        }else{
+            throw new IllegalArgumentException(accountNumber + " received. Account numbers must be greater than zero.");
+        }
     }
 
     /**
-     *
-     * @param customerNumber represents the customer number of the account holder. Passed from main, uses
-     *                       size of ArrayList to determine which customer object is the
-     *                       account holder.
+     * Deposited amount must be greater than zero
+     * @param amount
      */
-    public void setAccountHolder(int customerNumber) {
-        this.accountHolder = customerNumber;
-    }
-
     public void deposit(double amount){
-        balance += amount;
-        System.out.println("Deposit of " + String.format("$%.2f", amount) + " is processed.");
-        System.out.println("Account Balance " + String.format("$%.2f", balance) + "\n");
+        if(amount > 0){
+            balance += amount;
+            System.out.println("Deposit of " + String.format("$%.2f", amount) + " is processed.");
+            System.out.println("Account Balance " + String.format("$%.2f", balance) + "\n");
+        }else{
+            throw new IllegalArgumentException(amount + " received. Deposited amount must be greater than zero.");
+        }
     }
 
+    /**
+     *  Withdrawal amount must be greater than zero. Must not result in a negative balance.
+     * @param amount
+     */
     public void withdraw(double amount){
-        balance -= amount;
-        System.out.println("Withdrawal of " + String.format("$%.2f", amount) + " is processed.");
-        System.out.println("Account Balance " + String.format("$%.2f", balance) + "\n");
+        if(amount > 0 && balance-amount >= 0) {
+            balance -= amount;
+            System.out.println("Withdrawal of " + String.format("$%.2f", amount) + " is processed.");
+            System.out.println("Account Balance " + String.format("$%.2f", balance) + "\n");
+        }
+        else if(amount < 0){
+            throw new IllegalArgumentException(amount + " received. Amount must be greater than zero.");
+        }
+        else if(balance-amount < 0){
+            throw new IllegalArgumentException(amount + " cannot be withdrawn. Funds insufficient.");
+        }
     }
 
+    public String getAccountType() {
+        return accountType;
+    }
+
+    /**
+     * Function to allow an EFT between two accounts. Allows for transfers both between a customer's own accounts,
+     * and also for transfers between different customer's accounts.
+     *
+     * Passes to the deposit and withdraw functions, so makes use of their validation as well.
+     * @param amount
+     * @param sender
+     * @param recipient
+     */
     public static void fundsTransfer(double amount, int sender, int recipient){
-        //Update recipient account balance
-        accountsList.get(recipient).setBalance(accountsList.get(recipient).getBalance() + amount);
+        if(accountsList.get(recipient) != null){
+            //Update recipient account balance
+            accountsList.get(recipient).deposit(amount);
+        }else{
+            throw new IllegalArgumentException("Recipient account number " + recipient + " is invalid.");
+        }
 
-        //Update sender account balance
-        accountsList.get(sender).setBalance(accountsList.get(sender).getBalance() - amount);
-
-        //Print output to console
-        System.out.println("Electronic funds transfer completed.");
-        System.out.println("Recipient account " + accountsList.get(recipient).getAccountNumber() + " credited " + String.format("$%.2f", amount)
-                + ", new balance " + String.format("$%.2f", accountsList.get(recipient).getBalance()));
-        System.out.println("Sender account " + accountsList.get(sender).getAccountNumber() + " debited " + String.format("$%.2f", amount)
-                + ", new balance " + String.format("$%.2f", accountsList.get(sender).getBalance()));
+        if(accountsList.get(sender) != null){
+            //Update sender account balance
+            accountsList.get(sender).withdraw(amount);
+            //Print output to console
+            System.out.println("Electronic funds transfer completed.");
+            System.out.println("Recipient account " + accountsList.get(recipient).getAccountNumber() + " credited " + String.format("$%.2f", amount)
+                    + ", new balance " + String.format("$%.2f", accountsList.get(recipient).getBalance()));
+            System.out.println("Sender account " + accountsList.get(sender).getAccountNumber() + " debited " + String.format("$%.2f", amount)
+                    + ", new balance " + String.format("$%.2f", accountsList.get(sender).getBalance()));
+        }else{
+            throw new IllegalArgumentException("Recipient account number " + recipient + " is invalid.");
+        }
     }
 }

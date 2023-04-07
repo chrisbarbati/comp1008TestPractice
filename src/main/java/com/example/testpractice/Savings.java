@@ -8,10 +8,13 @@ public class Savings extends Account{
     }
 
     private static String accountType = "Savings";
-    public Savings(int customerNumber) {
-        super(customerNumber);
+    public Savings() {
     }
 
+    /**
+     * Savings accounts are a subclass of Account. Savings accounts have a default interest rate of 2%
+     * @return
+     */
     public static double getInterestRate() {
         return interestRate;
     }

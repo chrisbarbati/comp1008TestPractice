@@ -10,10 +10,14 @@ public class TFSA extends Account{
 
     private static String accountType = "TFSA";
 
-    public TFSA(int customerNumber) {
-        super(customerNumber);
+    public TFSA() {;
     }
 
+    /**
+     * TFSA is a subclass of account. They have a base interest rate of 5% and a contribution limit to be determined
+     * based upon the age of the owner.
+     * @return
+     */
     public static double getInterestRate() {
         return interestRate;
     }
