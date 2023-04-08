@@ -20,6 +20,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 
 public class BankController implements Initializable{
         /*
@@ -141,18 +142,25 @@ public class BankController implements Initializable{
      * Instantiates a new customer based on user input, and then adds it to the list of customers
      */
     private void addCustomer(){
-        System.out.println("add customer");
-        Customer.customersList.add(
-                new Customer(
-                        new Image(customerImageSrc.getText()),
-                        Customer.customersList.size(),
-                        Integer.parseInt(pinTextField.getText()),
-                        firstNameTextField.getText(),
-                        lastNameTextField.getText(),
-                        addressTextField.getText(),
-                        dobTextField.getText()
-                ));
-        nextButtonPressed();
+        try{
+            System.out.println("add customer");
+            Customer.customersList.add(
+                    new Customer(
+                            new Image(customerImageSrc.getText()),
+                            Customer.customersList.size(),
+                            Integer.parseInt(pinTextField.getText()),
+                            firstNameTextField.getText(),
+                            lastNameTextField.getText(),
+                            addressTextField.getText(),
+                            dobTextField.getText()
+                    ));
+            nextButtonPressed();
+        }catch(Exception s){
+            String message = s.toString();
+            message = message.substring(36); //Trims out the java.lang.illegalargumentexception, leaving only the error message
+            errorOutput.setText(message);
+            errorOutput.setTextFill(Color.RED);
+        }
     }
 
     /**
@@ -183,32 +191,36 @@ public class BankController implements Initializable{
      * Cycles to the next account in the customer's account list
      */
     private void acctForward(){
-        if(currentAccount < customersAcctNums.get(customersAcctNums.size() - 1)) {
-            System.out.println("next account");
-            currentAccount += 1;
-            updateCustomer();
+        if(customersAcctNums.size() > 0) {
+            if (currentAccount < customersAcctNums.get(customersAcctNums.size() - 1)) {
+                System.out.println("next account");
+                currentAccount += 1;
+                updateCustomer();
+                updateAccounts();
+            }
+            while (!customersAcctNums.contains(currentAccount)) {
+                currentAccount++;
+            }
             updateAccounts();
         }
-        while(!customersAcctNums.contains(currentAccount)){
-            currentAccount++;
-        }
-        updateAccounts();
     }
 
     /**
      * Cyles to the previous account in the customer's account list
      */
     private void acctBack(){
-        if(currentAccount > customersAcctNums.get(0)) {
-            System.out.println("previous account");
-            currentAccount -= 1;
-            updateCustomer();
+        if(customersAcctNums.size() > 0) {
+            if (currentAccount > customersAcctNums.get(0)) {
+                System.out.println("previous account");
+                currentAccount -= 1;
+                updateCustomer();
+                updateAccounts();
+            }
+            while (!customersAcctNums.contains(currentAccount)) {
+                currentAccount--;
+            }
             updateAccounts();
         }
-        while(!customersAcctNums.contains(currentAccount)){
-            currentAccount--;
-        }
-        updateAccounts();
     }
 
     /**
@@ -228,6 +240,7 @@ public class BankController implements Initializable{
     private void updateAccounts(){
         customersAcctNums.clear();
         accountLabels.clear();
+        errorOutput.setText("");
 
         for(Account account : Customer.customersList.get(currentCust).customersAccounts){
             customersAcctNums.add(account.getAccountNumber());
@@ -248,38 +261,76 @@ public class BankController implements Initializable{
      * EFT function - accesses the EFT function in the Account class
      */
     private void electronicFundsTransfer(){
-        Account.fundsTransfer(Double.parseDouble(eftAmount.getText()),
-                Integer.parseInt(eftSenderNum.getText()),
-                Integer.parseInt(eftRecipientNum.getText()));
-        System.out.println("EFT Confirmed");
-        updateAccounts();
+        try{
+            Account.fundsTransfer(Double.parseDouble(eftAmount.getText()),
+                    Integer.parseInt(eftSenderNum.getText()),
+                    Integer.parseInt(eftRecipientNum.getText()));
+            System.out.println("EFT Confirmed");
+            updateAccounts();
+        }catch(Exception s){
+            String message = s.toString();
+            message = message.substring(36); //Trims out the java.lang.illegalargumentexception, leaving only the error message
+            errorOutput.setText(message);
+            errorOutput.setTextFill(Color.RED);
+        }
     }
 
     /**
      * Deposit function - accesses the deposit function in the account class
      */
-    private void deposit(){
-        Account.accountsList.get(currentAccount).deposit(Double.parseDouble(depositAmt.getText()));
-        System.out.println("Deposit");
-        updateAccounts();
+    private void deposit() {
+        try {
+            Account.accountsList.get(currentAccount).deposit(Double.parseDouble(depositAmt.getText()));
+            System.out.println("Deposit");
+            updateAccounts();
+        } catch (Exception s) {
+            if (depositAmt.getText().equals("")) {
+                errorOutput.setText("Input field cannot be empty");
+                errorOutput.setTextFill(Color.RED);
+            } else {
+                String message = s.toString();
+                message = message.substring(36); //Trims out the java.lang.illegalargumentexception, leaving only the error message
+                errorOutput.setText(message);
+                errorOutput.setTextFill(Color.RED);
+            }
+        }
     }
 
     /**
      * Withdrawal function - accesses the withdrawal function in the account class
      */
     private void withdraw(){
-        Account.accountsList.get(currentAccount).withdraw(Double.parseDouble(withdrawalAmt.getText()));
-        System.out.println("Withdrawal");
-        updateAccounts();
+        try{
+            Account.accountsList.get(currentAccount).withdraw(Double.parseDouble(withdrawalAmt.getText()));
+            System.out.println("Withdrawal");
+            updateAccounts();
+        }catch(Exception s){
+            if(withdrawalAmt.getText().equals("")){
+                errorOutput.setText("Input field cannot be empty");
+                errorOutput.setTextFill(Color.RED);
+            }else {
+                String message = s.toString();
+                message = message.substring(36); //Trims out the java.lang.illegalargumentexception, leaving only the error message
+                errorOutput.setText(message);
+                errorOutput.setTextFill(Color.RED);
+            }
+        }
     }
 
     /**
      * Open account function - accesses the open account function in the account class
      */
     private void addAccount(){
-        Customer.customersList.get(currentCust).openAccount(accountTypeField.getText());
-        updateCustomer();
-        updateAccounts();
+        try{
+            Customer.customersList.get(currentCust).openAccount(accountTypeField.getText());
+            updateCustomer();
+            updateAccounts();
+        }catch(Exception s){
+            String message = s.toString();
+            message = message.substring(36); //Trims out the java.lang.illegalargumentexception, leaving only the error message
+            errorOutput.setText(message);
+            errorOutput.setTextFill(Color.RED);
+        }
     }
 
     public BankController() {

@@ -83,7 +83,7 @@ public class Customer {
         if(customerNumber >= 0){
             this.customerNumber = customerNumber;
         }else{
-            throw new IllegalArgumentException(customerNumber + " received. Customer numbers must be zero or greater.");
+            throw new IllegalArgumentException("Customer numbers must be zero or greater.");
         }
     }
 
@@ -98,10 +98,10 @@ public class Customer {
         if(customerPIN > 0 && customerPIN < 9999 ){
             this.customerPIN = customerPIN;
         }else if(customerPIN == 1234 || customerPIN == 4321 || customerPIN == 0000){
-            throw new IllegalArgumentException(customerPIN + " is not a secure PIN. Please try again.");
+            throw new IllegalArgumentException("Insecure PIN. Please try again.");
         }
         else{
-            throw new IllegalArgumentException(customerPIN + " received. Customer PIN must be in the range 0 - 9999");
+            throw new IllegalArgumentException("PIN must be in the range 0 - 9999");
         }
     }
 
@@ -117,7 +117,7 @@ public class Customer {
         if(firstName.length() > 2) {
             this.firstName = firstName;
         }else{
-            throw new IllegalArgumentException(firstName + " is not a valid input. Name must have at least two non-whitespace characters");
+            throw new IllegalArgumentException("Name must have at least two non-whitespace characters");
         }
     }
 
@@ -133,7 +133,7 @@ public class Customer {
         if(lastName.length() > 2) {
             this.lastName = lastName;
         }else{
-            throw new IllegalArgumentException(lastName + " is not a valid input. Name must have at least two non-whitespace characters");
+            throw new IllegalArgumentException("Name must have at least two non-whitespace characters");
         }
     }
 
@@ -168,8 +168,9 @@ public class Customer {
 
         try{
             dob = LocalDate.parse(dateOfBirth, dobFormat);
+            this.dateOfBirth = dateOfBirth;
         }catch (Exception e){
-            throw new IllegalArgumentException("Invalid date. Date must take format MM-DD-YYYY, and must have a valid day and month.");
+            throw new IllegalArgumentException("Invalid date. Date must take format MM-DD-YYYY.");
         }
 
     }
@@ -193,7 +194,7 @@ public class Customer {
             Account.accountsList.add(new TFSA());
             this.customersAccounts.add(Account.accountsList.get(Account.accountsList.size() - 1));
         }else{
-            throw new IllegalArgumentException(accountType + " is not a valid selection. Valid types are Chequing, Savings, and TFSA.");
+            throw new IllegalArgumentException("Valid types are Chequing, Savings, and TFSA.");
         }
 
     }

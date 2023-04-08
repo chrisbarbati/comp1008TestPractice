@@ -82,7 +82,7 @@ public class Account {
             System.out.println("Withdrawal of " + String.format("$%.2f", amount) + " is processed.");
             System.out.println("Account Balance " + String.format("$%.2f", balance) + "\n");
         }
-        else if(amount < 0){
+        else if(amount <= 0){
             throw new IllegalArgumentException(amount + " received. Amount must be greater than zero.");
         }
         else if(balance-amount < 0){
