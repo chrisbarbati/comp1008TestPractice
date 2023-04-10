@@ -81,41 +81,13 @@ public class AccountTest {
     }
 
     @Test
-    public void fundsTransfer() {
-
-        double balanceStart1 = account.getBalance();
-        double balanceStart2 = account2.getBalance();
-
-        double amount = 100;
-
-        Account.fundsTransfer(amount, account.getAccountNumber(), account2.getAccountNumber());
-
-        assertEquals((balanceStart1 - amount), account.getBalance(), .0001);
-        assertEquals((balanceStart2 + amount), account2.getBalance(), .0001);
-    }
-
-    @Test
-    public void fundsTransferInvalid() {
-        //Transfer more than is in the sender's account
-        Assertions.assertThrows(IllegalArgumentException.class, () ->{Account.fundsTransfer(400, account.getAccountNumber(), account2.getAccountNumber());});
-
-        //Transfer a negative amount, transfer zero
-        Assertions.assertThrows(IllegalArgumentException.class, () ->{Account.fundsTransfer(-10, account.getAccountNumber(), account2.getAccountNumber());});
-        Assertions.assertThrows(IllegalArgumentException.class, () ->{Account.fundsTransfer(0, account.getAccountNumber(), account2.getAccountNumber());});
-
-        //Transfer from the same account
-        Assertions.assertThrows(IllegalArgumentException.class, () ->{Account.fundsTransfer(10, 0, 0);});
-
-        //Transfer from non-existent accounts
-        Assertions.assertThrows(IndexOutOfBoundsException.class, () ->{Account.fundsTransfer(1, 20, 0);});
-        Assertions.assertThrows(IndexOutOfBoundsException.class, () ->{Account.fundsTransfer(1, 0, 20);});
-    }
-
-    @Test
     public void setAccountNumber() {
         account.setAccountNumber(9);
         assertEquals(9, account.getAccountNumber());
     }
 
-
+    @Test
+    public void getInterestRate(){
+        assertEquals(0.01, account.getInterestRate(), .0001);
+    }
 }

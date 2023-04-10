@@ -126,28 +126,4 @@ public class Account {
     public double getInterestRate(){
         return interestRate;
     }
-
-    /**
-     * Function to allow an EFT between two accounts. Allows for transfers both between a customer's own accounts,
-     * and also for transfers between different customer's accounts.
-     *
-     * Passes to the deposit and withdraw functions, so makes use of their validation as well.
-     * @param amount
-     * @param sender
-     * @param recipient
-     */
-    public static void fundsTransfer(double amount, int sender, int recipient){
-        if(accountsList.get(recipient) == accountsList.get(sender)){
-            throw new IllegalArgumentException("Sender and Receiver accounts cannot be the same");
-        }else if(!accountsList.contains(Account.accountsList.get(recipient))){
-            throw new IndexOutOfBoundsException("Sender account number " + recipient + " is invalid.");
-        }else if(!accountsList.contains(Account.accountsList.get(sender))) {
-            throw new IndexOutOfBoundsException("Recipient account number " + sender + " is invalid.");
-        }else if(amount <= 0) {
-            throw new IllegalArgumentException("Amount must be greater than zero.");
-        }else{
-            accountsList.get(sender).withdraw(amount);
-            accountsList.get(recipient).deposit(amount);
-        }
-    }
 }

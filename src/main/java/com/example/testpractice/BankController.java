@@ -102,18 +102,6 @@ public class BankController implements Initializable{
     private TextField dobTextField;
 
     @FXML
-    private TextField eftAmount;
-
-    @FXML
-    private Button eftConfirmation;
-
-    @FXML
-    private TextField eftRecipientNum;
-
-    @FXML
-    private TextField eftSenderNum;
-
-    @FXML
     private Label errorOutput;
 
     @FXML
@@ -258,36 +246,6 @@ public class BankController implements Initializable{
     }
 
     /**
-     * EFT function - accesses the EFT function in the Account class
-     */
-    private void electronicFundsTransfer(){
-        try{
-            Account.fundsTransfer(Double.parseDouble(eftAmount.getText()),
-                    Integer.parseInt(eftSenderNum.getText()),
-                    Integer.parseInt(eftRecipientNum.getText()));
-            System.out.println("EFT Confirmed");
-            updateAccounts();
-        }catch(Exception s){
-            String message;
-            if(s.toString().equals("java.lang.NumberFormatException: empty String") || s.toString().equals("java.lang.NumberFormatException: For input string: \"\"")){
-                message = "Fields cannot be empty";
-            }else if(s.toString().equals("java.lang.IllegalArgumentException: Sender and Receiver accounts cannot be the same")){
-                message = s.toString();
-                message = message.substring(36);
-            }else if(s instanceof IndexOutOfBoundsException){
-                message = "Sender or receiver account invalid";
-            }else if(s instanceof IllegalArgumentException){
-                message = "Amount invalid, please verify account balance";
-            }
-            else {
-                message = "Error, please retry";
-            }
-            errorOutput.setText(message);
-            errorOutput.setTextFill(Color.RED);
-        }
-    }
-
-    /**
      * Deposit function - accesses the deposit function in the account class
      */
     private void deposit() {
@@ -349,7 +307,6 @@ public class BankController implements Initializable{
         backButton.setOnMouseClicked(event -> backButtonPressed());
         accountForwardButton.setOnMouseClicked(event -> acctForward());
         accountBackButton.setOnMouseClicked(event -> acctBack());
-        eftConfirmation.setOnMouseClicked(event -> electronicFundsTransfer());
         depositConfirm.setOnMouseClicked(event -> deposit());
         withdrawalConfirm.setOnMouseClicked(event -> withdraw());
         addAccountButton.setOnMouseClicked(event -> addAccount());
