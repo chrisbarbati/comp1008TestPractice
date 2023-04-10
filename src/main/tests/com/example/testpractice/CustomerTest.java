@@ -1,12 +1,8 @@
 package com.example.testpractice;
 
-import javafx.fxml.Initializable;
-import javafx.scene.image.Image;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import java.net.URL;
-import java.util.ResourceBundle;
 
 import static org.junit.Assert.*;
 
@@ -14,15 +10,14 @@ public class CustomerTest {
 
     Customer customer;
 
-    //Empty string array to let me call the main method in BankApplication
-    String[] args = new String[1];
 
     @Before
     public void setUp() throws Exception {
-        BankApplication.main(args);
+        BankApplication.main(new String[1]);
+
         //Should add new customer at index 4, since above line runs the Initialize method
         //Tests will need to be checked if more customers are added to the Initialize method later on
-        customer = new Customer(new Image("portrait1.jpg"), Customer.customersList.size(), 1932, "Mr.", "Tester", "123 Fake St", "01-01-1900");
+        customer = new Customer("portrait1.jpg", Customer.customersList.size(), 1932, "John", "Tester", "123 Fake St", "01-01-1900");
     }
 
     @Test
@@ -37,6 +32,11 @@ public class CustomerTest {
     }
 
     @Test
+    public void setCustomerNumberInvalid() {;
+        assertThrows(IllegalArgumentException.class, () -> {customer.setCustomerNumber(-10);});
+    }
+
+    @Test
     public void getCustomerPIN() {
         assertEquals(1932, customer.getCustomerPIN());
     }
@@ -48,14 +48,31 @@ public class CustomerTest {
     }
 
     @Test
+    public void setCustomerPINInvalid() {
+        assertThrows(IllegalArgumentException.class, () ->{customer.setCustomerPIN(1234);});
+        assertThrows(IllegalArgumentException.class, () ->{customer.setCustomerPIN(-1);});
+        assertThrows(IllegalArgumentException.class, () ->{customer.setCustomerPIN(10000);});
+    }
+
+    @Test
     public void getFirstName() {
-        assertEquals("Mr.", customer.getFirstName());
+        assertEquals("John", customer.getFirstName());
     }
 
     @Test
     public void setFirstName() {
-        customer.setFirstName("Mrs.");
-        assertEquals("Mrs.", customer.getFirstName());
+        customer.setFirstName("James");
+        assertEquals("James", customer.getFirstName());
+    }
+
+    @Test
+    public void setFirstNameInvalid() {
+        assertThrows(IllegalArgumentException.class, () ->{customer.setFirstName("1234");});
+    }
+
+    @Test
+    public void setLastNameInvalid() {
+        assertThrows(IllegalArgumentException.class, () ->{customer.setLastName("1234");});
     }
 
     @Test
@@ -76,8 +93,13 @@ public class CustomerTest {
 
     @Test
     public void setAddress() {
-        customer.setAddress("321 Fake St");
-        assertEquals("321 Fake St", customer.getAddress());
+        customer.setAddress("321 -,.' Fake St");
+        assertEquals("321 -,.' Fake St", customer.getAddress());
+    }
+
+    @Test
+    public void setAddressInvalid() {
+        assertThrows(IllegalArgumentException.class, () -> {customer.setAddress("@#$%$");});
     }
 
     @Test
@@ -89,6 +111,13 @@ public class CustomerTest {
     public void setDateOfBirth() {
         customer.setDateOfBirth("02-02-1900");
         assertEquals("02-02-1900", customer.getDateOfBirth());
+    }
+
+    @Test
+    public void setDateOfBirthInvalid() {
+        assertThrows(IllegalArgumentException.class, () ->{customer.setDateOfBirth("01-01-2015");});
+        assertThrows(IllegalArgumentException.class, () ->{customer.setDateOfBirth("01-01-1850");});
+        assertThrows(IllegalArgumentException.class, () ->{customer.setDateOfBirth("June 5th 2000");});
     }
 
     @Test

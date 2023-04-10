@@ -9,6 +9,8 @@ public class Account {
     private double balance;
     private String accountType;
 
+    private Double interestRate;
+
     /**
      * Master ArrayList of all accounts.
      */
@@ -25,9 +27,29 @@ public class Account {
         setAccountNumber(accountNumber);
     }
 
+    private void setInterestRate(Double interestRate){
+        this.interestRate = interestRate;
+    }
 
-    public String setAccountType(String accountType){
-        return accountType;
+
+    /**
+     * Add validation later. Chequing, Savings, TFSA
+     * @param accountType
+     * @return
+     */
+    public void setAccountType(String accountType){
+
+        this.accountType = accountType;
+
+        if(accountType == "Chequing"){
+            setInterestRate(0.01);
+        }else if(accountType == "Savings"){
+            setInterestRate(0.05);
+        }else if(accountType == "TFSA"){
+            setInterestRate(0.03);
+        }else{
+            throw new IllegalArgumentException("Valid account types are Chequing, Savings, and TFSA");
+        }
     }
 
     public double getBalance() {

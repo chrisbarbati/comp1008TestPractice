@@ -146,7 +146,7 @@ public class BankController implements Initializable{
             System.out.println("add customer");
             Customer.customersList.add(
                     new Customer(
-                            new Image(customerImageSrc.getText()),
+                            customerImageSrc.getText(),
                             Customer.customersList.size(),
                             Integer.parseInt(pinTextField.getText()),
                             firstNameTextField.getText(),
@@ -354,20 +354,20 @@ public class BankController implements Initializable{
          * Index zero is filled with a dummy-account, to make indexing more user friendly. This account is not
          * accessible to the end-user
          */
-        Customer.customersList.add(new Customer(new Image("portrait1.jpg"), Customer.customersList.size(), 0001, "Fictional", "Fred",
+        Customer.customersList.add(new Customer("portrait1.jpg", Customer.customersList.size(), 0001, "Fictional", "Fred",
                 "742 Evergreen Terrace", "01-01-1990"));
         Customer.customersList.get(0).openAccount("Chequing");
 
         //Create a new customer object "Christian", and store in customer list
-        Customer.customersList.add(new Customer(new Image("portrait1.jpg"), Customer.customersList.size(), 1525, "Christian", "Barbati",
+        Customer.customersList.add(new Customer("portrait1.jpg", Customer.customersList.size(), 1525, "Christian", "Barbati",
                 "742 Evergreen Terrace", "06-22-1998"));
 
         //Create a new customer object "Jenny" and store in customer list
-        Customer.customersList.add(new Customer(new Image("portrait2.jpg"), Customer.customersList.size(),9486, "Jenny", "Baker",
+        Customer.customersList.add(new Customer("portrait2.jpg", Customer.customersList.size(),9486, "Jenny", "Baker",
                 "247 Evergreen Terrace", "12-12-1998"));
 
         //Create a new customer object "Michael" and store in customer list
-        Customer.customersList.add(new Customer(new Image("portrait3.jpg"), Customer.customersList.size(),3854, "Michael", "Smith",
+        Customer.customersList.add(new Customer("portrait3.jpg", Customer.customersList.size(),3854, "Michael", "Smith",
                 "471 Evergreen Terrace", "07-15-1998"));
 
         /**

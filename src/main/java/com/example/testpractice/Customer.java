@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import java.text.FieldPosition;
 import java.text.ParsePosition;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +32,11 @@ public class Customer {
     private String firstName, lastName, address, dateOfBirth;
     private Image customerImage;
 
+    private LocalDate dob;
+
     /**
-     * Default constructor. Requires image, customer number, PIN, names (first and last), address, DOB
-     * @param customerImage
+     * Default constructor. Requires image path, customer number, PIN, names (first and last), address, DOB
+     * @param imagePath
      * @param customerNumber
      * @param customerPIN
      * @param firstName
@@ -41,8 +44,8 @@ public class Customer {
      * @param address
      * @param dateOfBirth
      */
-    public Customer(Image customerImage, int customerNumber, int customerPIN, String firstName, String lastName, String address, String dateOfBirth){
-        setCustomerImage(customerImage);
+    public Customer(String imagePath, int customerNumber, int customerPIN, String firstName, String lastName, String address, String dateOfBirth){
+        setCustomerImage(imagePath);
 
         setCustomerNumber(customerNumber);
 
@@ -67,8 +70,8 @@ public class Customer {
         return customerImage;
     }
 
-    public void setCustomerImage(Image customerImage) {
-        this.customerImage = customerImage;
+    public void setCustomerImage(String imagePath) {
+        this.customerImage = new Image(imagePath);
     }
 
     public int getCustomerNumber() {
@@ -95,13 +98,13 @@ public class Customer {
      * @param customerPIN must be 4 digits long, must be greater than zero, must not be one of the common passwords.
      */
     public void setCustomerPIN(int customerPIN) {
-        if(customerPIN > 0 && customerPIN < 9999 ){
+        if(customerPIN > 0 && customerPIN < 9999 && !(customerPIN == 1234 || customerPIN == 4321 || customerPIN == 0000)){
             this.customerPIN = customerPIN;
-        }else if(customerPIN == 1234 || customerPIN == 4321 || customerPIN == 0000){
-            throw new IllegalArgumentException("Insecure PIN. Please try again.");
+        }else if (customerPIN < 0 || customerPIN > 9999 && !(customerPIN == 1234 || customerPIN == 4321 || customerPIN == 0000)){
+                throw new IllegalArgumentException("PIN must be in the range 0 - 9999");
         }
-        else{
-            throw new IllegalArgumentException("PIN must be in the range 0 - 9999");
+        if(customerPIN == 1234 || customerPIN == 4321 || customerPIN == 0000){
+            throw new IllegalArgumentException("Insecure PIN. Please try again.");
         }
     }
 
@@ -110,11 +113,12 @@ public class Customer {
     }
 
     /**
-     * @param firstName customer's first name. Must have more than two non-whitespace characters.
+     * @param firstName customer's first name. Must have more than two non-whitespace characters. Must be alphabet
+     *                  characters only.
      */
     public void setFirstName(String firstName) {
         firstName = firstName.trim();
-        if(firstName.length() >= 2) {
+        if(firstName.length() >= 2 && firstName.matches("^[A-Za-z]*$")) {
             this.firstName = firstName;
         }else{
             throw new IllegalArgumentException("Name must have at least two non-whitespace characters");
@@ -126,14 +130,15 @@ public class Customer {
     }
 
     /**
-     * @param lastName customer's last name. Must have more than two non-whitespace characters.
+     * @param lastName customer's last name. Must have more than two non-whitespace characters. Must be alphabet
+     *                 characters only.
      */
     public void setLastName(String lastName) {
         lastName = lastName.trim();
-        if(lastName.length() >= 2) {
+        if(lastName.length() >= 2 && lastName.matches("^[A-Za-z]*$")){
             this.lastName = lastName;
         }else{
-            throw new IllegalArgumentException("Name must have at least two non-whitespace characters");
+            throw new IllegalArgumentException("Name must have at least two alphabet characters, no numeric or symbols.");
         }
     }
 
@@ -145,17 +150,19 @@ public class Customer {
      *
      * @param address customer's address.
      *
-     *                Regex Pattern: Must not have special characters. Alphanumeric only. Length and format not
+     *                Regex Pattern: Must not have special characters (, . ' - allowed). Alphanumeric only. Length and format not
      *                tested, due to variety of addresses.
-     *
-     *                Come back to this later and add Regex
      */
     public void setAddress(String address) {
+        if(address.matches("^[\\w\\s-.',]*$")){
             this.address = address;
+        }else{
+            throw new IllegalArgumentException("Invalid address, only alphanumeric and , . ' - allowed.");
+        }
     }
 
     public String getDateOfBirth() {
-        return dateOfBirth;
+        return dob.toString();
     }
 
     /**
@@ -163,14 +170,20 @@ public class Customer {
      * @param dateOfBirth customer's DOB. Must take form MM-DD-YYYY. Found that the Date import has some useful functions for this
      */
     public void setDateOfBirth(String dateOfBirth) {
-        LocalDate dob;
         DateTimeFormatter dobFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
         try{
-            dob = LocalDate.parse(dateOfBirth, dobFormat);
-            this.dateOfBirth = dateOfBirth;
+            this.dob = LocalDate.parse(dateOfBirth, dobFormat);
         }catch (Exception e){
             throw new IllegalArgumentException("Invalid date. Date must take format MM-DD-YYYY.");
+        }
+
+        Period interval = Period.between(dob, LocalDate.now());
+
+        int yearsBetween = interval.getYears();
+
+        if(yearsBetween < 18 || yearsBetween > 130){
+            throw new IllegalArgumentException("Customers must be at least 18 years old, and younger than 130.");
         }
 
     }
