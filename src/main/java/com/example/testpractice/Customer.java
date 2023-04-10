@@ -106,6 +106,7 @@ public class Customer {
         if(customerPIN == 1234 || customerPIN == 4321 || customerPIN == 0000){
             throw new IllegalArgumentException("Insecure PIN. Please try again.");
         }
+
     }
 
     public String getFirstName() {
@@ -121,7 +122,7 @@ public class Customer {
         if(firstName.length() >= 2 && firstName.matches("^[A-Za-z]*$")) {
             this.firstName = firstName;
         }else{
-            throw new IllegalArgumentException("Name must have at least two non-whitespace characters");
+            throw new IllegalArgumentException("Name must have at least two alphabet characters, no numeric or symbols.");
         }
     }
 

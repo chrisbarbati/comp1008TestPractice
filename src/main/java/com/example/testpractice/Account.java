@@ -41,11 +41,11 @@ public class Account {
 
         this.accountType = accountType;
 
-        if(accountType == "Chequing"){
+        if(accountType.equals("Chequing")){
             setInterestRate(0.01);
-        }else if(accountType == "Savings"){
+        }else if(accountType.equals("Savings")){
             setInterestRate(0.05);
-        }else if(accountType == "TFSA"){
+        }else if(accountType.equals("TFSA")){
             setInterestRate(0.03);
         }else{
             throw new IllegalArgumentException("Valid account types are Chequing, Savings, and TFSA");
