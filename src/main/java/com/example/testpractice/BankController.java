@@ -244,7 +244,7 @@ public class BankController implements Initializable{
 
         for(Account account : Customer.customersList.get(currentCust).customersAccounts){
             customersAcctNums.add(account.getAccountNumber());
-            String accountInformation = "Account Number: " + account.getAccountNumber() + " Type: " + account.getAccountType() + " Balance: $" + account.getBalance();
+            String accountInformation = "# " + account.getAccountNumber() + ", Type: " + account.getAccountType() + ", Balance: " + String.format("$%.2f", account.getBalance()) + ", Rate: " + String.format("%.2f", account.getInterestRate()*100) + "%";
             accountLabels.add(new Label(accountInformation));
             // Revisit this. Used to highlight the currently selected acct in the scrollpane.
             if(account.getAccountNumber() == currentAccount) {
@@ -274,7 +274,12 @@ public class BankController implements Initializable{
             }else if(s.toString().equals("java.lang.IllegalArgumentException: Sender and Receiver accounts cannot be the same")){
                 message = s.toString();
                 message = message.substring(36);
-            }else {
+            }else if(s instanceof IndexOutOfBoundsException){
+                message = "Sender or receiver account invalid";
+            }else if(s instanceof IllegalArgumentException){
+                message = "Amount invalid, please verify account balance";
+            }
+            else {
                 message = "Error, please retry";
             }
             errorOutput.setText(message);

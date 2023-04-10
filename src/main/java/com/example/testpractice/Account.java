@@ -65,7 +65,7 @@ public class Account {
         if(balance >= 0){
             this.balance = balance;
         }else{
-            throw new IllegalArgumentException(balance + " received. Accounts cannot be set to a balance below zero");
+            throw new IllegalArgumentException(String.format("%2f", balance) + " received. Accounts cannot be set to a balance below zero");
         }
     }
 
@@ -97,7 +97,7 @@ public class Account {
             System.out.println("Deposit of " + String.format("$%.2f", amount) + " is processed.");
             System.out.println("Account Balance " + String.format("$%.2f", balance) + "\n");
         }else{
-            throw new IllegalArgumentException(amount + " received. Amount must be greater than zero.");
+            throw new IllegalArgumentException(String.format("%2f", amount) + " received. Amount must be greater than zero.");
         }
     }
 
@@ -112,15 +112,19 @@ public class Account {
             System.out.println("Account Balance " + String.format("$%.2f", balance) + "\n");
         }
         else if(amount <= 0){
-            throw new IllegalArgumentException(amount + " received. Amount must be greater than zero.");
+            throw new IllegalArgumentException(String.format("%2f", amount) + " received. Amount must be greater than zero.");
         }
         else if(balance-amount < 0){
-            throw new IllegalArgumentException(amount + " cannot be withdrawn. Funds insufficient.");
+            throw new IllegalArgumentException(String.format("%2f", amount) + " cannot be withdrawn. Funds insufficient.");
         }
     }
 
     public String getAccountType() {
         return accountType;
+    }
+
+    public double getInterestRate(){
+        return interestRate;
     }
 
     /**
@@ -135,11 +139,11 @@ public class Account {
     public static void fundsTransfer(double amount, int sender, int recipient){
         if(accountsList.get(recipient) == accountsList.get(sender)){
             throw new IllegalArgumentException("Sender and Receiver accounts cannot be the same");
-        }if(recipient < 0 || recipient > Account.accountsList.size() - 1){
+        }else if(!accountsList.contains(Account.accountsList.get(recipient))){
             throw new IndexOutOfBoundsException("Sender account number " + recipient + " is invalid.");
-        }if(sender < 0 || sender > Account.accountsList.size() - 1) {
+        }else if(!accountsList.contains(Account.accountsList.get(sender))) {
             throw new IndexOutOfBoundsException("Recipient account number " + sender + " is invalid.");
-        }if(amount <= 0) {
+        }else if(amount <= 0) {
             throw new IllegalArgumentException("Amount must be greater than zero.");
         }else{
             accountsList.get(sender).withdraw(amount);
