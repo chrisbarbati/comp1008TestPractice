@@ -15,12 +15,19 @@ public class Account {
     static ArrayList<Account> accountsList = new ArrayList<>();
     private int accountNumber = accountsList.size();
 
-    public Account() {
+    public Account(String accountType) {
         //Balance starts at zero
         setBalance(0);
 
+        setAccountType(accountType);
+
         //Each account is numbered according to it's List index
         setAccountNumber(accountNumber);
+    }
+
+
+    public String setAccountType(String accountType){
+        return accountType;
     }
 
     public double getBalance() {

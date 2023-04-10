@@ -13,10 +13,10 @@ public class AccountTest {
 
     @Before
     public void setUp() throws Exception {
-        account = new TFSA();
+        account = new Account("Chequing");
         account.setBalance(100.55);
 
-        account2 = new TFSA();
+        account2 = new Account("Chequing");
         account2.setBalance(200);
 
         Account.accountsList.add(account);
@@ -56,11 +56,6 @@ public class AccountTest {
     @Test
     public void getAccountNumber() {
         assertEquals(0, account.getAccountNumber());
-    }
-
-    @Test
-    public void getAccountType() {
-        assertEquals("TFSA", account.getAccountType());
     }
 
     @Test

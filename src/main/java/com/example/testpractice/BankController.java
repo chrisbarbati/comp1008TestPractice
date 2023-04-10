@@ -275,7 +275,7 @@ public class BankController implements Initializable{
                 message = s.toString();
                 message = message.substring(36);
             }else {
-                message = "Error, please retry. Numeric input only.";
+                message = "Error, please retry";
             }
             errorOutput.setText(message);
             errorOutput.setTextFill(Color.RED);
