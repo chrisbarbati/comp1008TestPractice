@@ -68,7 +68,7 @@ public class Account {
             System.out.println("Deposit of " + String.format("$%.2f", amount) + " is processed.");
             System.out.println("Account Balance " + String.format("$%.2f", balance) + "\n");
         }else{
-            throw new IllegalArgumentException(amount + " received. Deposited amount must be greater than zero.");
+            throw new IllegalArgumentException(amount + " received. Amount must be greater than zero.");
         }
     }
 
@@ -104,24 +104,17 @@ public class Account {
      * @param recipient
      */
     public static void fundsTransfer(double amount, int sender, int recipient){
-        if(accountsList.get(recipient) != null){
-            //Update recipient account balance
-            accountsList.get(recipient).deposit(amount);
+        if(accountsList.get(recipient) == accountsList.get(sender)){
+            throw new IllegalArgumentException("Sender and Receiver accounts cannot be the same");
+        }if(recipient < 0 || recipient > Account.accountsList.size() - 1){
+            throw new IndexOutOfBoundsException("Sender account number " + recipient + " is invalid.");
+        }if(sender < 0 || sender > Account.accountsList.size() - 1) {
+            throw new IndexOutOfBoundsException("Recipient account number " + sender + " is invalid.");
+        }if(amount <= 0) {
+            throw new IllegalArgumentException("Amount must be greater than zero.");
         }else{
-            throw new IllegalArgumentException("Recipient account number " + recipient + " is invalid.");
-        }
-
-        if(accountsList.get(sender) != null){
-            //Update sender account balance
             accountsList.get(sender).withdraw(amount);
-            //Print output to console
-            System.out.println("Electronic funds transfer completed.");
-            System.out.println("Recipient account " + accountsList.get(recipient).getAccountNumber() + " credited " + String.format("$%.2f", amount)
-                    + ", new balance " + String.format("$%.2f", accountsList.get(recipient).getBalance()));
-            System.out.println("Sender account " + accountsList.get(sender).getAccountNumber() + " debited " + String.format("$%.2f", amount)
-                    + ", new balance " + String.format("$%.2f", accountsList.get(sender).getBalance()));
-        }else{
-            throw new IllegalArgumentException("Recipient account number " + recipient + " is invalid.");
+            accountsList.get(recipient).deposit(amount);
         }
     }
 }

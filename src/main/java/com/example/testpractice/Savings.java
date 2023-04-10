@@ -1,7 +1,7 @@
 package com.example.testpractice;
 
 public class Savings extends Account{
-    private static double interestRate = 0.02;
+    private double interestRate = 0.02;
 
     public String getAccountType() {
         return accountType;
@@ -15,11 +15,15 @@ public class Savings extends Account{
      * Savings accounts are a subclass of Account. Savings accounts have a default interest rate of 2%
      * @return
      */
-    public static double getInterestRate() {
+    public double getInterestRate() {
         return interestRate;
     }
 
-    public static void setInterestRate(double interestRate) {
-        Savings.interestRate = interestRate;
+    public void setInterestRate(double interestRate) {
+        if(interestRate >= 0 && interestRate <= 1){
+            this.interestRate = interestRate;
+        }else{
+            throw new IllegalArgumentException("Interest rate must be in range 0-1, inclusive");
+        }
     }
 }

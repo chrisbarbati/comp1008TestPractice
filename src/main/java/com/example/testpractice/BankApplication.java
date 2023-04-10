@@ -11,7 +11,7 @@ public class BankApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(BankApplication.class.getResource("bank-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1500, 800);
+        Scene scene = new Scene(fxmlLoader.load(), 1475, 900);
         stage.setTitle("Bank Application");
         stage.setScene(scene);
         stage.show();

@@ -114,7 +114,7 @@ public class Customer {
      */
     public void setFirstName(String firstName) {
         firstName = firstName.trim();
-        if(firstName.length() > 2) {
+        if(firstName.length() >= 2) {
             this.firstName = firstName;
         }else{
             throw new IllegalArgumentException("Name must have at least two non-whitespace characters");
@@ -130,7 +130,7 @@ public class Customer {
      */
     public void setLastName(String lastName) {
         lastName = lastName.trim();
-        if(lastName.length() > 2) {
+        if(lastName.length() >= 2) {
             this.lastName = lastName;
         }else{
             throw new IllegalArgumentException("Name must have at least two non-whitespace characters");

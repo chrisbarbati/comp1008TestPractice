@@ -268,8 +268,15 @@ public class BankController implements Initializable{
             System.out.println("EFT Confirmed");
             updateAccounts();
         }catch(Exception s){
-            String message = s.toString();
-            message = message.substring(36); //Trims out the java.lang.illegalargumentexception, leaving only the error message
+            String message;
+            if(s.toString().equals("java.lang.NumberFormatException: empty String") || s.toString().equals("java.lang.NumberFormatException: For input string: \"\"")){
+                message = "Fields cannot be empty";
+            }else if(s.toString().equals("java.lang.IllegalArgumentException: Sender and Receiver accounts cannot be the same")){
+                message = s.toString();
+                message = message.substring(36);
+            }else {
+                message = "Error, please retry. Numeric input only.";
+            }
             errorOutput.setText(message);
             errorOutput.setTextFill(Color.RED);
         }
@@ -283,16 +290,10 @@ public class BankController implements Initializable{
             Account.accountsList.get(currentAccount).deposit(Double.parseDouble(depositAmt.getText()));
             System.out.println("Deposit");
             updateAccounts();
-        } catch (Exception s) {
-            if (depositAmt.getText().equals("")) {
-                errorOutput.setText("Input field cannot be empty");
-                errorOutput.setTextFill(Color.RED);
-            } else {
-                String message = s.toString();
-                message = message.substring(36); //Trims out the java.lang.illegalargumentexception, leaving only the error message
-                errorOutput.setText(message);
-                errorOutput.setTextFill(Color.RED);
-            }
+        }catch (Exception s) {
+            String message = "Amount must be a number greater than zero.";
+            errorOutput.setText(message);
+            errorOutput.setTextFill(Color.RED);
         }
     }
 
@@ -304,16 +305,10 @@ public class BankController implements Initializable{
             Account.accountsList.get(currentAccount).withdraw(Double.parseDouble(withdrawalAmt.getText()));
             System.out.println("Withdrawal");
             updateAccounts();
-        }catch(Exception s){
-            if(withdrawalAmt.getText().equals("")){
-                errorOutput.setText("Input field cannot be empty");
-                errorOutput.setTextFill(Color.RED);
-            }else {
-                String message = s.toString();
-                message = message.substring(36); //Trims out the java.lang.illegalargumentexception, leaving only the error message
-                errorOutput.setText(message);
-                errorOutput.setTextFill(Color.RED);
-            }
+        }catch (Exception s) {
+            String message = "Amount must be a number greater than zero, and less than account balance";
+            errorOutput.setText(message);
+            errorOutput.setTextFill(Color.RED);
         }
     }
 
