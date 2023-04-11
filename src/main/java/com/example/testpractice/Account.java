@@ -1,28 +1,55 @@
 package com.example.testpractice;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Account {
     /***
-     * Bank account.
+     * Bank account class. Instance variables
      */
     private double balance;
-    private int accountNumber, accountHolder;
-
-    private static int currentAccountNumber = 0;
     private String accountType;
 
-    static ArrayList<String> validAccountNumber = new ArrayList<String>();
+    private Double interestRate;
 
-    public Account(int accountHolder, String accountType) {
-        setBalance(balance);
-        setAccountNumber(accountNumber);
-        setAccountHolder(accountHolder);
+    /**
+     * Master ArrayList of all accounts.
+     */
+    static ArrayList<Account> accountsList = new ArrayList<>();
+    private int accountNumber = accountsList.size();
+
+    public Account(String accountType) {
+        //Balance starts at zero
+        setBalance(0);
+
         setAccountType(accountType);
-        System.out.println("New account created. \nBalance: " + balance + " \nNumber: "+ accountNumber
-                + " \nAccount Holder: " + accountHolder + " \nAccount Type: " + accountType + "\n\n");
+
+        //Each account is numbered according to it's List index
+        setAccountNumber(accountNumber);
+    }
+
+    private void setInterestRate(Double interestRate){
+        this.interestRate = interestRate;
+    }
+
+
+    /**
+     * Add validation later. Chequing, Savings, TFSA
+     * @param accountType
+     * @return
+     */
+    public void setAccountType(String accountType){
+
+        this.accountType = accountType;
+
+        if(accountType.equals("Chequing")){
+            setInterestRate(0.01);
+        }else if(accountType.equals("Savings")){
+            setInterestRate(0.05);
+        }else if(accountType.equals("TFSA")){
+            setInterestRate(0.03);
+        }else{
+            throw new IllegalArgumentException("Valid account types are Chequing, Savings, and TFSA");
+        }
     }
 
     public double getBalance() {
@@ -30,73 +57,73 @@ public class Account {
     }
 
     /**
-     *
-     * @param balance represents account balance. Can be negative if account is overdrawn
+     * Balance starts at zero. This method is not accessed in normal use (usually one would use withdraw or deposit).
+     * Negative balances are rejected.
+     * @param balance
      */
     public void setBalance(double balance) {
-        this.balance = 0;
+        if(balance >= 0){
+            this.balance = balance;
+        }else{
+            throw new IllegalArgumentException(String.format("%2f", balance) + " received. Accounts cannot be set to a balance below zero");
+        }
     }
 
     public int getAccountNumber() {
         return accountNumber;
     }
 
-
     /**
      *
-     * @param currentAccountNumber represents next account number to be assigned.
-     *                           Must be unique, assigned sequentially.
+     * @param accountNumber represents next account number to be assigned. Passed from Main, using the
+     *                      size of the accounts ArrayList to determine the next free account number.
+     *                      Must be greater than or equal to zero.
      */
-    public void setAccountNumber(int currentAccountNumber) {
-        currentAccountNumber++;
-        this.accountNumber = currentAccountNumber;
-        validAccountNumber.add(Integer.toString(this.accountNumber));
-    }
-
-    public int getAccountHolder() {
-        return accountHolder;
-    }
-
-    /**
-     *
-     * @param accountHolder represents the customer number of the account holder. Must be greater than zero,
-     *                      must be unique, must be one that is already allocated to a customer.
-     */
-    public void setAccountHolder(int accountHolder) {
-        if(Customer.displayAssignedCustomerNumbers().contains(Integer.toString(accountHolder))) {
-            this.accountHolder = accountHolder;
+    public void setAccountNumber(int accountNumber) {
+        if(accountNumber >= 0) {
+            this.accountNumber = accountNumber;
         }else{
-            throw new IllegalArgumentException("Customer number " + accountHolder + " has not been assigned to a customer.");
+            throw new IllegalArgumentException(accountNumber + " received. Account numbers must be greater than zero.");
         }
     }
 
-    public static List<String> getValidAccountTypes()
-    {
-        return Arrays.asList("chequing", "savings", "tfsa");
+    /**
+     * Deposited amount must be greater than zero
+     * @param amount
+     */
+    public void deposit(double amount){
+        if(amount > 0){
+            balance += amount;
+            System.out.println("Deposit of " + String.format("$%.2f", amount) + " is processed.");
+            System.out.println("Account Balance " + String.format("$%.2f", balance) + "\n");
+        }else{
+            throw new IllegalArgumentException(String.format("%2f", amount) + " received. Amount must be greater than zero.");
+        }
+    }
+
+    /**
+     *  Withdrawal amount must be greater than zero. Must not result in a negative balance.
+     * @param amount
+     */
+    public void withdraw(double amount){
+        if(amount > 0 && balance-amount >= 0) {
+            balance -= amount;
+            System.out.println("Withdrawal of " + String.format("$%.2f", amount) + " is processed.");
+            System.out.println("Account Balance " + String.format("$%.2f", balance) + "\n");
+        }
+        else if(amount <= 0){
+            throw new IllegalArgumentException(String.format("%2f", amount) + " received. Amount must be greater than zero.");
+        }
+        else if(balance-amount < 0){
+            throw new IllegalArgumentException(String.format("%2f", amount) + " cannot be withdrawn. Funds insufficient.");
+        }
     }
 
     public String getAccountType() {
         return accountType;
     }
 
-    /**
-     *
-     * @param accountType represents the type of account. Chequing, savings, TFSA, etc.
-     */
-    public void setAccountType(String accountType) {
-        accountType = accountType.toLowerCase();
-
-        List<String> validAccountTypes = getValidAccountTypes();
-        if(validAccountTypes.contains(accountType)) {
-            this.accountType = accountType;
-        }
-        else{
-            throw new IllegalArgumentException(accountType + " is not a valid account type. Options are " +
-                    "Chequing, Savings, TFSA");
-        }
-    }
-
-    public static ArrayList displayAssignedAccountNumbers(){
-        return validAccountNumber;
+    public double getInterestRate(){
+        return interestRate;
     }
 }

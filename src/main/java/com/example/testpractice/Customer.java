@@ -1,23 +1,53 @@
 package com.example.testpractice;
 
+import javafx.scene.image.Image;
+
+import java.text.FieldPosition;
+import java.text.ParsePosition;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Customer {
+    /**
+     * Bank customer class.
+     */
+
+    /**
+     * List that holds each Customer object
+     */
+    static ArrayList<Customer> customersList = new ArrayList<>();
+
+    /**
+     * Instance List for each customer, that holds his / her accounts
+     */
+    ArrayList<Account> customersAccounts = new ArrayList<>();
+
+    /**
+     * Other instance variables
+     */
     private int customerNumber, customerPIN;
-
-    private static int currentCustomerNumber = 0;
-
-    static ArrayList<String> validCustomerNumber = new ArrayList<String>();
     private String firstName, lastName, address, dateOfBirth;
+    private Image customerImage;
 
-    public Customer(int customerPIN, String firstName, String lastName, String address, String dateOfBirth) {
+    private LocalDate dob;
 
-        /**
-         * Increment the current customer number by one, and assign it to the customer we are constructing
-         */
-        currentCustomerNumber++;
-        setCustomerNumber(currentCustomerNumber);
+    /**
+     * Default constructor. Requires image path, customer number, PIN, names (first and last), address, DOB
+     * @param imagePath
+     * @param customerNumber
+     * @param customerPIN
+     * @param firstName
+     * @param lastName
+     * @param address
+     * @param dateOfBirth
+     */
+    public Customer(String imagePath, int customerNumber, int customerPIN, String firstName, String lastName, String address, String dateOfBirth){
+        setCustomerImage(imagePath);
+
+        setCustomerNumber(customerNumber);
 
         setCustomerPIN(customerPIN);
 
@@ -29,8 +59,19 @@ public class Customer {
 
         setDateOfBirth(dateOfBirth);
 
-        System.out.println("\nNew customer created. \nNumber: " + customerNumber + " \nPIN: "+ customerPIN
-        + " \nName: " + firstName + " " + lastName + " \nAddress: " + address + " \nDOB: " + dateOfBirth + "\n");
+        //Only prints for customer numbers > 0, so no output is printed for dummy customer.
+        if(customerNumber > 0) {
+            System.out.println("\nNew customer created. \nCustomer Number: " + customerNumber + " \nPIN: " + customerPIN
+                    + " \nName: " + firstName + " " + lastName + " \nAddress: " + address + " \nDOB: " + dateOfBirth + "\n");
+        }
+    }
+
+    public Image getCustomerImage() {
+        return customerImage;
+    }
+
+    public void setCustomerImage(String imagePath) {
+        this.customerImage = new Image(imagePath);
     }
 
     public int getCustomerNumber() {
@@ -38,12 +79,15 @@ public class Customer {
     }
 
     /**
-     *
-     * @param currentCustomerNumber must be unique, must be assigned sequentially.
+     *  Customer numbers cannot be negative.
+     * @param customerNumber
      */
-    public void setCustomerNumber(int currentCustomerNumber) {
-        this.customerNumber = currentCustomerNumber;
-        validCustomerNumber.add(Integer.toString(this.customerNumber));
+    public void setCustomerNumber(int customerNumber) {
+        if(customerNumber >= 0){
+            this.customerNumber = customerNumber;
+        }else{
+            throw new IllegalArgumentException("Customer numbers must be zero or greater.");
+        }
     }
 
     public int getCustomerPIN() {
@@ -51,11 +95,18 @@ public class Customer {
     }
 
     /**
-     *
-     * @param customerPIN must be four digits.
+     * @param customerPIN must be 4 digits long, must be greater than zero, must not be one of the common passwords.
      */
     public void setCustomerPIN(int customerPIN) {
-        this.customerPIN = customerPIN;
+        if(customerPIN > 0 && customerPIN < 9999 && !(customerPIN == 1234 || customerPIN == 4321 || customerPIN == 0000)){
+            this.customerPIN = customerPIN;
+        }else if (customerPIN < 0 || customerPIN > 9999 && !(customerPIN == 1234 || customerPIN == 4321 || customerPIN == 0000)){
+                throw new IllegalArgumentException("PIN must be in the range 0 - 9999");
+        }
+        if(customerPIN == 1234 || customerPIN == 4321 || customerPIN == 0000){
+            throw new IllegalArgumentException("Insecure PIN. Please try again.");
+        }
+
     }
 
     public String getFirstName() {
@@ -63,11 +114,16 @@ public class Customer {
     }
 
     /**
-     *
-     * @param firstName customer's first name.
+     * @param firstName customer's first name. Must have more than two non-whitespace characters. Must be alphabet
+     *                  characters only.
      */
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        firstName = firstName.trim();
+        if(firstName.length() >= 2 && firstName.matches("^[A-Za-z]*$")) {
+            this.firstName = firstName;
+        }else{
+            throw new IllegalArgumentException("Name must have at least two alphabet characters, no numeric or symbols.");
+        }
     }
 
     public String getLastName() {
@@ -75,11 +131,16 @@ public class Customer {
     }
 
     /**
-     *
-     * @param lastName customer's last name
+     * @param lastName customer's last name. Must have more than two non-whitespace characters. Must be alphabet
+     *                 characters only.
      */
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        lastName = lastName.trim();
+        if(lastName.length() >= 2 && lastName.matches("^[A-Za-z]*$")){
+            this.lastName = lastName;
+        }else{
+            throw new IllegalArgumentException("Name must have at least two alphabet characters, no numeric or symbols.");
+        }
     }
 
     public String getAddress() {
@@ -88,31 +149,55 @@ public class Customer {
 
     /**
      *
-     * @param address customer's address. Maybe break this into multiple fields later (house number, street name,
-     *                province, etc). For now K.I.S.S.
+     * @param address customer's address.
+     *
+     *                Regex Pattern: Must not have special characters (, . ' - allowed). Alphanumeric only. Length and format not
+     *                tested, due to variety of addresses.
      */
     public void setAddress(String address) {
-        this.address = address;
+        if(address.matches("^[\\w\\s-.',]*$")){
+            this.address = address;
+        }else{
+            throw new IllegalArgumentException("Invalid address, only alphanumeric and , . ' - allowed.");
+        }
     }
 
     public String getDateOfBirth() {
-        return dateOfBirth;
+        return dob.toString();
     }
 
     /**
      *
-     * @param dateOfBirth customer's DOB. Maybe break this into multiple fields later (day, month, year). For now,
-     *                    K.I.S.S
+     * @param dateOfBirth customer's DOB. Must take form MM-DD-YYYY. Found that the Date import has some useful functions for this
      */
     public void setDateOfBirth(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+        DateTimeFormatter dobFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
+        try{
+            this.dob = LocalDate.parse(dateOfBirth, dobFormat);
+        }catch (Exception e){
+            throw new IllegalArgumentException("Invalid date. Date must take format MM-DD-YYYY.");
+        }
+
+        Period interval = Period.between(dob, LocalDate.now());
+
+        int yearsBetween = interval.getYears();
+
+        if(yearsBetween < 18 || yearsBetween > 130){
+            throw new IllegalArgumentException("Customers must be at least 18 years old, and younger than 130.");
+        }
+
     }
 
-    public static ArrayList displayAssignedCustomerNumbers(){
-        return validCustomerNumber;
-    }
-
+    /**
+     * Function to open a new account. Takes a string accountType as it's argument, and calls the appropriate constructor.
+     * Add functionality to make function case-insensitive
+     *
+     * @param accountType
+     */
     public void openAccount(String accountType){
-         Account account1 = new Account(customerNumber, accountType);
+        //Add account to both accountList and customer's list
+            Account.accountsList.add(new Account(accountType));
+            this.customersAccounts.add(Account.accountsList.get(Account.accountsList.size() - 1));
     }
 }

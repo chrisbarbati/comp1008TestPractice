@@ -1,0 +1,53 @@
+.anchorPane {
+    -fx-background-image: url("../../../cardBackground.jpg");
+}
+
+* {
+    -fx-font-size: 1.4em;
+}
+
+.button {
+    -fx-background-color: white;
+    -fx-background-radius: .9em;
+    -fx-border-color: black;
+    -fx-border-width: .2em;
+    -fx-font-size: 2em;
+    -fx-border-radius: .8em;
+}
+
+.button:hover {
+    -fx-background-color: grey;
+    -fx-font-weight: bold;
+}
+
+.leftVBox {
+    -fx-background-color: rgba(200, 200, 200, .3);
+}
+
+.rightVBox {
+    -fx-background-color: rgba(200, 200, 200, .3);
+}
+
+.centerVBox {
+    -fx-background-color: rgba(200, 200, 200, .3);
+}
+
+.label {
+    -fx-font-weight: bold;
+}
+
+.customerInfo {
+    -fx-font-size: 2em;
+}
+
+.accountInfo {
+    -fx-font-size: .2em;
+}
+
+.customerAccounts, .accountFunctions {
+    -fx-font-size: 2em;
+}
+
+.errorOutput {
+    -fx-word-wrap: break-word;
+}
