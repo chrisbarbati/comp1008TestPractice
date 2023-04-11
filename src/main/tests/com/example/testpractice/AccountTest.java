@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 
 public class AccountTest {
 
-    private Account account, account2;
+    private Account account, account2, account3, account4;
 
     @Before
     public void setUp() throws Exception {
@@ -19,11 +19,20 @@ public class AccountTest {
         account2 = new Account("Chequing");
         account2.setBalance(200);
 
+        account3 = new Account("Savings");
+
+        account4 = new Account("TFSA");
+
         Account.accountsList.add(account);
         account.setAccountNumber(Account.accountsList.size()-1);
 
         Account.accountsList.add(account2);
         account2.setAccountNumber(Account.accountsList.size()-1);
+    }
+
+    @Test
+    public void setAccountTypeInvalid() {
+        assertThrows(IllegalArgumentException.class, () -> {new Account("Test");});
     }
 
     @Test
@@ -84,6 +93,11 @@ public class AccountTest {
     public void setAccountNumber() {
         account.setAccountNumber(9);
         assertEquals(9, account.getAccountNumber());
+    }
+
+    @Test
+    public void getAccountType() {
+        assertEquals("Chequing", account.getAccountType());
     }
 
     @Test

@@ -1,5 +1,5 @@
 .anchorPane {
-    -fx-background-image: url("../../../cardBackground.jpg");
+    -fx-background-image: url("cardBackground.jpg");
 }
 
 * {

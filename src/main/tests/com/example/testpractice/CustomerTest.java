@@ -13,8 +13,6 @@ public class CustomerTest {
 
     @Before
     public void setUp() throws Exception {
-        BankApplication.main(new String[1]);
-
         //Should add new customer at index 4, since above line runs the Initialize method
         //Tests will need to be checked if more customers are added to the Initialize method later on
         customer = new Customer("portrait1.jpg", Customer.customersList.size(), 1932, "John", "Tester", "123 Fake St", "01-01-1900");
@@ -22,7 +20,7 @@ public class CustomerTest {
 
     @Test
     public void getCustomerNumber() {
-        assertEquals(4, customer.getCustomerNumber());
+        assertEquals(0, customer.getCustomerNumber());
     }
 
     @Test

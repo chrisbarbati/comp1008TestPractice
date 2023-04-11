@@ -29,8 +29,7 @@ public class Customer {
      * Other instance variables
      */
     private int customerNumber, customerPIN;
-    private String firstName, lastName, address, dateOfBirth;
-    private Image customerImage;
+    private String firstName, lastName, address, imagePath, dateOfBirth;
 
     private LocalDate dob;
 
@@ -58,20 +57,15 @@ public class Customer {
         setAddress(address);
 
         setDateOfBirth(dateOfBirth);
-
-        //Only prints for customer numbers > 0, so no output is printed for dummy customer.
-        if(customerNumber > 0) {
-            System.out.println("\nNew customer created. \nCustomer Number: " + customerNumber + " \nPIN: " + customerPIN
-                    + " \nName: " + firstName + " " + lastName + " \nAddress: " + address + " \nDOB: " + dateOfBirth + "\n");
-        }
     }
 
     public Image getCustomerImage() {
-        return customerImage;
+        //imagePath = "com/example/testpractice/images/" + imagePath;
+        return new Image(imagePath);
     }
 
     public void setCustomerImage(String imagePath) {
-        this.customerImage = new Image(imagePath);
+        this.imagePath = imagePath;
     }
 
     public int getCustomerNumber() {
@@ -163,7 +157,8 @@ public class Customer {
     }
 
     public String getDateOfBirth() {
-        return dob.toString();
+        DateTimeFormatter dobFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        return dob.format(dobFormat).toString();
     }
 
     /**
