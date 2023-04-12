@@ -60,7 +60,6 @@ public class Customer {
     }
 
     public Image getCustomerImage() {
-        //imagePath = "com/example/testpractice/images/" + imagePath;
         return new Image(imagePath);
     }
 
