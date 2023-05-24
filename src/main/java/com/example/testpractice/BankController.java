@@ -16,6 +16,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
+import java.sql.*;
+
+/**
+ * Implement database connectivity here
+ */
+
 public class BankController implements Initializable{
         /*
       Christian Barbati - 200390696
