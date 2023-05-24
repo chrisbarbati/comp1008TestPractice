@@ -18,10 +18,6 @@ import javafx.scene.paint.Color;
 
 import java.sql.*;
 
-/**
- * Implement database connectivity here
- */
-
 public class BankController implements Initializable{
         /*
       Christian Barbati - 200390696
@@ -125,6 +121,34 @@ public class BankController implements Initializable{
     @FXML
     private Button withdrawalConfirm;
 
+    /**
+     * Database Connectivity
+     */
+
+    private void database(){
+        try{
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/customerList", "root", "root");
+
+            Statement statement = connection.createStatement();
+
+            ResultSet resultSet = statement.executeQuery("select * from customers");
+
+            int customerNum;
+            String customerName;
+
+            while(resultSet.next()){
+                customerNum = resultSet.getInt("customerNum");
+                customerName = resultSet.getString("customerName").trim();
+                System.out.println("Customer Number: " + customerNum + " Customer Name: " + customerName);
+            }
+
+            resultSet.close();
+            statement.close();
+            connection.close();
+        }catch(Exception e){
+            System.out.println(e);
+        }
+    }
 
     /**
      * Instantiates a new customer based on user input, and then adds it to the list of customers
@@ -363,5 +387,11 @@ public class BankController implements Initializable{
         currentAccount = 1;
         updateAccounts();
         updateCustomer();
+
+        /**
+         * Test database connectivity
+         */
+
+        database();
     }
 }

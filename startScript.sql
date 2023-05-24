@@ -1,5 +1,10 @@
 CREATE DATABASE customerList;
 
+USE customerList;
+
 CREATE TABLE customers(
-	customerNumber INT PRIMARY KEY NOT NULL
+	customerNum int PRIMARY KEY NOT NULL,
+    customerName varchar(30) NOT NULL
 );
+
+INSERT INTO customers (customerNum, customerName) VALUES (1, "John"), (2, "Sally");
