@@ -57,6 +57,22 @@ public class Customer {
         setAddress(address);
 
         setDateOfBirth(dateOfBirth);
+
+        /**
+         * Add customer to database
+         */
+        if(customerNumber > 1){
+            DBController.DBWrite("INSERT INTO customers (customerNum, firstName, lastName, pin, address, dob) VALUES ("
+                + (Customer.customersList.size() - 1) + " , '"
+                + Customer.customersList.get(Customer.customersList.size() - 1).getFirstName() + "' , '"
+                + Customer.customersList.get(Customer.customersList.size() - 1).getLastName() + "' , "
+                + Customer.customersList.get(Customer.customersList.size() - 1).getCustomerPIN() + " , '"
+                + Customer.customersList.get(Customer.customersList.size() - 1).getAddress() + "' , '"
+                + Customer.customersList.get(Customer.customersList.size() - 1).getDateOfBirth() + "');");
+
+            System.out.println("Customer added to database: " + customerNumber);
+        }
+
     }
 
     public Image getCustomerImage() {

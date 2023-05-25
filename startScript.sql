@@ -4,7 +4,16 @@ USE customerList;
 
 CREATE TABLE customers(
 	customerNum int PRIMARY KEY NOT NULL,
-    customerName varchar(30) NOT NULL
+    firstName varchar(30) NOT NULL,
+    lastName varchar(30) NOT NULL,
+    pin int NOT NULL, #Not an acceptable way to store pin in real life. For demonstrative purposes only,
+    address varchar(40) NOT NULL,
+    dob varchar(30) NOT NULL #Revise to use dateTime later.
 );
 
-INSERT INTO customers (customerNum, customerName) VALUES (1, "John"), (2, "Sally");
+CREATE TABLE accounts(
+	accountNum int PRIMARY KEY NOT NULL,
+    accountType varchar(30) NOT NULL,
+    accountOwner int,
+    FOREIGN KEY (accountOwner) REFERENCES customers(customerNum)
+);

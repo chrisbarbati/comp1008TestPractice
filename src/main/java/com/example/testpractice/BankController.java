@@ -122,35 +122,6 @@ public class BankController implements Initializable{
     private Button withdrawalConfirm;
 
     /**
-     * Database Connectivity
-     */
-
-    private void database(){
-        try{
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/customerList", "root", "root");
-
-            Statement statement = connection.createStatement();
-
-            ResultSet resultSet = statement.executeQuery("select * from customers");
-
-            int customerNum;
-            String customerName;
-
-            while(resultSet.next()){
-                customerNum = resultSet.getInt("customerNum");
-                customerName = resultSet.getString("customerName").trim();
-                System.out.println("Customer Number: " + customerNum + " Customer Name: " + customerName);
-            }
-
-            resultSet.close();
-            statement.close();
-            connection.close();
-        }catch(Exception e){
-            System.out.println(e);
-        }
-    }
-
-    /**
      * Instantiates a new customer based on user input, and then adds it to the list of customers
      */
     private void addCustomer(){
@@ -389,9 +360,45 @@ public class BankController implements Initializable{
         updateCustomer();
 
         /**
-         * Test database connectivity
+         * Test database connectivity (basic read functions)
+         *
+         * Todo: Find better implementation for close() method (see DBController class)
          */
 
-        database();
+        /**
+         * Test read functionality
+         */
+
+        ResultSet resultSet = DBController.DBRead("SELECT * FROM customers");
+
+        int customerNum;
+        String customerFirstName;
+        String customerLastName;
+        int customerPin;
+        String customerAddress;
+        String customerDob;
+
+        try{
+            while(resultSet.next()){
+                customerNum = resultSet.getInt("customerNum");
+                customerFirstName = resultSet.getString("firstName").trim();
+                customerLastName = resultSet.getString("lastName").trim();
+                customerPin = resultSet.getInt("pin");
+                customerAddress = resultSet.getString("address").trim();
+                customerDob = resultSet.getString("dob").trim();
+
+                System.out.println("Customer Number: " + customerNum);
+                System.out.println("First Name: " + customerFirstName);
+                System.out.println("Last Name: " + customerLastName);
+                System.out.println("PIN: " + customerPin);
+                System.out.println("Address: " + customerAddress);
+                System.out.println("DOB: " + customerDob);
+            }
+
+            DBController.close();
+        }catch(Exception e){
+            System.out.println(e);
+        }
+
     }
 }
