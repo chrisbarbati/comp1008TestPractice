@@ -8,6 +8,7 @@ public class Account {
      */
     private double balance;
     private String accountType;
+    private int owner;
 
     private Double interestRate;
 
@@ -17,14 +18,32 @@ public class Account {
     static ArrayList<Account> accountsList = new ArrayList<>();
     private int accountNumber = accountsList.size();
 
-    public Account(String accountType) {
+    public Account(String accountType, int owner) {
         //Balance starts at zero
         setBalance(0);
 
         setAccountType(accountType);
 
+        setOwner(owner);
+
         //Each account is numbered according to it's List index
         setAccountNumber(accountNumber);
+    }
+
+    public static void addAccountToDB(Account a){
+        DBController.DBWrite("INSERT INTO accounts (accountNum, accountType, accountOwner) VALUES ("
+                + a.getAccountNumber() + " , '"
+                + a.getAccountType() + "' , "
+                + a.getOwner() + ");"); //Need to find way to get owner
+        System.out.println("Account added to database: " + a.getAccountNumber());
+    }
+
+    public int getOwner() {
+        return owner;
+    }
+
+    public void setOwner(int owner) {
+        this.owner = owner;
     }
 
     private void setInterestRate(Double interestRate){

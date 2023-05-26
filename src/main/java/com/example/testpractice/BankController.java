@@ -137,6 +137,7 @@ public class BankController implements Initializable{
                             addressTextField.getText(),
                             dobTextField.getText()
                     ));
+
             nextButtonPressed();
         }catch(Exception s){
             String message = s.toString();
@@ -318,23 +319,19 @@ public class BankController implements Initializable{
         Customer.customersList.add(new Customer("portrait1.jpg", Customer.customersList.size(), 1525, "Christian", "Barbati",
                 "742 Evergreen Terrace", "06-22-1998"));
 
-        /**
-         * Find cleaner implementation for this - way to add function call only AFTER added to the
-         * ArrayList. Way to overload ArrayList.add() maybe?
-         */
-        Customer.customersList.get(Customer.customersList.size() - 1).addCustomerToDB();
+        Customer.addCustomerToDB(Customer.customersList.get(Customer.customersList.size() - 1));
 
         //Create a new customer object "Jenny" and store in customer list
         Customer.customersList.add(new Customer("portrait2.jpg", Customer.customersList.size(),9486, "Jenny", "Baker",
                 "247 Evergreen Terrace", "12-12-1998"));
 
-        Customer.customersList.get(Customer.customersList.size() - 1).addCustomerToDB();
+        Customer.addCustomerToDB(Customer.customersList.get(Customer.customersList.size() - 1));
 
         //Create a new customer object "Michael" and store in customer list
         Customer.customersList.add(new Customer("portrait3.jpg", Customer.customersList.size(),3854, "Michael", "Smith",
                 "471 Evergreen Terrace", "07-15-1998"));
 
-        Customer.customersList.get(Customer.customersList.size() - 1).addCustomerToDB();
+        Customer.addCustomerToDB(Customer.customersList.get(Customer.customersList.size() - 1));
 
         /**
          * Open some accounts for our customers. Added in random order to demonstrate that forward and back buttons
@@ -342,16 +339,25 @@ public class BankController implements Initializable{
          */
 
         Customer.customersList.get(0).openAccount("Chequing");
+        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
         Customer.customersList.get(1).openAccount("Chequing");
+        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
         Customer.customersList.get(1).openAccount("Savings");
+        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
         Customer.customersList.get(2).openAccount("Savings");
+        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
         Customer.customersList.get(2).openAccount("TFSA");
+        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
         Customer.customersList.get(3).openAccount("Savings");
+        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
         Customer.customersList.get(2).openAccount("Chequing");
+        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
         Customer.customersList.get(2).openAccount("Savings");
+        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
         Customer.customersList.get(1).openAccount("Chequing");
+        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
         Customer.customersList.get(3).openAccount("Savings");
-
+        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
 
         /**
          * Populate the label fields with some initial values
@@ -374,6 +380,8 @@ public class BankController implements Initializable{
          * Test database connectivity (basic read functions)
          *
          * Todo: Find better implementation for close() method (see DBController class)
+         * Todo: Find better way to call DBWrite automatically for each new Customer
+         * that is instantiated.
          */
 
         /**

@@ -59,15 +59,23 @@ public class Customer {
         setDateOfBirth(dateOfBirth);
     }
 
-    public void addCustomerToDB(){
+    /**
+     * Static method to add a customer to the database.
+     * Works agnostic of whether customer is in ArrayList,
+     * so to make sure they are synchronized perhaps call them both from
+     * some other method.
+     *
+     * @param c Customer object to be inserted.
+     */
+    public static void addCustomerToDB(Customer c){
         DBController.DBWrite("INSERT INTO customers (customerNum, firstName, lastName, pin, address, dob) VALUES ("
-                + Customer.customersList.get(Customer.customersList.size() - 1).getCustomerNumber() + " , '"
-                + Customer.customersList.get(Customer.customersList.size() - 1).getFirstName() + "' , '"
-                + Customer.customersList.get(Customer.customersList.size() - 1).getLastName() + "' , "
-                + Customer.customersList.get(Customer.customersList.size() - 1).getCustomerPIN() + " , '"
-                + Customer.customersList.get(Customer.customersList.size() - 1).getAddress() + "' , '"
-                + Customer.customersList.get(Customer.customersList.size() - 1).getDateOfBirth() + "');");
-        System.out.println("Customer added to database: " + Customer.customersList.get(Customer.customersList.size() - 1).getCustomerNumber());
+                + c.getCustomerNumber() + " , '"
+                + c.getFirstName() + "' , '"
+                + c.getLastName() + "' , "
+                + c.getCustomerPIN() + " , '"
+                + c.getAddress() + "' , '"
+                + c.getDateOfBirth() + "');");
+        System.out.println("Customer added to database: " + c.getCustomerNumber());
     }
 
     public Image getCustomerImage() {
@@ -202,7 +210,7 @@ public class Customer {
      */
     public void openAccount(String accountType){
         //Add account to both accountList and customer's list
-            Account.accountsList.add(new Account(accountType));
+            Account.accountsList.add(new Account(accountType, customerNumber));
             this.customersAccounts.add(Account.accountsList.get(Account.accountsList.size() - 1));
     }
 }
