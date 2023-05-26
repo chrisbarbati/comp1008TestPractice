@@ -313,24 +313,35 @@ public class BankController implements Initializable{
          */
         Customer.customersList.add(new Customer("portrait1.jpg", Customer.customersList.size(), 0001, "Fictional", "Fred",
                 "742 Evergreen Terrace", "01-01-1990"));
-        Customer.customersList.get(0).openAccount("Chequing");
 
         //Create a new customer object "Christian", and store in customer list
         Customer.customersList.add(new Customer("portrait1.jpg", Customer.customersList.size(), 1525, "Christian", "Barbati",
                 "742 Evergreen Terrace", "06-22-1998"));
 
+        /**
+         * Find cleaner implementation for this - way to add function call only AFTER added to the
+         * ArrayList. Way to overload ArrayList.add() maybe?
+         */
+        Customer.customersList.get(Customer.customersList.size() - 1).addCustomerToDB();
+
         //Create a new customer object "Jenny" and store in customer list
         Customer.customersList.add(new Customer("portrait2.jpg", Customer.customersList.size(),9486, "Jenny", "Baker",
                 "247 Evergreen Terrace", "12-12-1998"));
+
+        Customer.customersList.get(Customer.customersList.size() - 1).addCustomerToDB();
 
         //Create a new customer object "Michael" and store in customer list
         Customer.customersList.add(new Customer("portrait3.jpg", Customer.customersList.size(),3854, "Michael", "Smith",
                 "471 Evergreen Terrace", "07-15-1998"));
 
+        Customer.customersList.get(Customer.customersList.size() - 1).addCustomerToDB();
+
         /**
          * Open some accounts for our customers. Added in random order to demonstrate that forward and back buttons
          * function agnostic of list position
          */
+
+        Customer.customersList.get(0).openAccount("Chequing");
         Customer.customersList.get(1).openAccount("Chequing");
         Customer.customersList.get(1).openAccount("Savings");
         Customer.customersList.get(2).openAccount("Savings");

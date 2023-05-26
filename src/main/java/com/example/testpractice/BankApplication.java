@@ -16,7 +16,7 @@ public class BankApplication extends Application {
         stage.setTitle("Bank Application");
         stage.getIcons().add(new Image("icon.png"));
         stage.setScene(scene);
-        stage.show();
+        //stage.show();
     }
 
     public static void main(String[] args) {

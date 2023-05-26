@@ -1,3 +1,5 @@
+DROP DATABASE customerList;
+
 CREATE DATABASE customerList;
 
 USE customerList;
