@@ -60,22 +60,24 @@ public class Customer {
     }
 
     /**
-     * Static method to add a customer to the database.
-     * Works agnostic of whether customer is in ArrayList,
-     * so to make sure they are synchronized perhaps call them both from
-     * some other method.
+     * Method to add a customer to the SQL database.
      *
-     * @param c Customer object to be inserted.
+     * Non-static, so it can be called for each individual customer without passing args.
      */
-    public static void addCustomerToDB(Customer c){
-        DBController.DBWrite("INSERT INTO customers (customerNum, firstName, lastName, pin, address, dob) VALUES ("
-                + c.getCustomerNumber() + " , '"
-                + c.getFirstName() + "' , '"
-                + c.getLastName() + "' , "
-                + c.getCustomerPIN() + " , '"
-                + c.getAddress() + "' , '"
-                + c.getDateOfBirth() + "');");
-        System.out.println("Customer added to database: " + c.getCustomerNumber());
+    public void addCustomerToDB(){
+        new DBController().DBWrite("INSERT INTO customers (customerNum, firstName, lastName, pin, address, dob, imagePath) VALUES ("
+                + getCustomerNumber() + " , '"
+                + getFirstName() + "' , '"
+                + getLastName() + "' , "
+                + getCustomerPIN() + " , '"
+                + getAddress() + "' , '"
+                + getDateOfBirth() + "' , '"
+                + getImagePath() + "');");
+        System.out.println("Customer added to database: " + Customer.customersList.get(Customer.customersList.size() - 1).getCustomerNumber());
+    }
+
+    public String getImagePath() {
+        return imagePath;
     }
 
     public Image getCustomerImage() {
@@ -210,7 +212,10 @@ public class Customer {
      */
     public void openAccount(String accountType){
         //Add account to both accountList and customer's list
-            Account.accountsList.add(new Account(accountType, customerNumber));
-            this.customersAccounts.add(Account.accountsList.get(Account.accountsList.size() - 1));
+        Account.accountsList.add(new Account(accountType, this.customerNumber));
+        this.customersAccounts.add(Account.accountsList.get(Account.accountsList.size() - 1));
+
+        //Add account to database
+        Account.accountsList.get(Account.accountsList.size() - 1).addAccountToDB();
     }
 }

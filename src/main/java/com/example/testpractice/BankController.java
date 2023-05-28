@@ -122,7 +122,8 @@ public class BankController implements Initializable{
     private Button withdrawalConfirm;
 
     /**
-     * Instantiates a new customer based on user input, and then adds it to the list of customers
+     * Instantiates a new customer based on user input, and then adds it to the list of customers.
+     * Also calls the addCustomerToDB() method for each new Customer object
      */
     private void addCustomer(){
         try{
@@ -137,7 +138,7 @@ public class BankController implements Initializable{
                             addressTextField.getText(),
                             dobTextField.getText()
                     ));
-
+            Customer.customersList.get(Customer.customersList.size() - 1).addCustomerToDB();
             nextButtonPressed();
         }catch(Exception s){
             String message = s.toString();
@@ -249,6 +250,7 @@ public class BankController implements Initializable{
             Account.accountsList.get(currentAccount).deposit(Double.parseDouble(depositAmt.getText()));
             System.out.println("Deposit");
             updateAccounts();
+            Account.updateBalanceDB(currentAccount);
         }catch (Exception s) {
             String message = "Amount must be a number greater than zero.";
             errorOutput.setText(message);
@@ -263,6 +265,7 @@ public class BankController implements Initializable{
         try{
             Account.accountsList.get(currentAccount).withdraw(Double.parseDouble(withdrawalAmt.getText()));
             System.out.println("Withdrawal");
+            Account.updateBalanceDB(currentAccount);
             updateAccounts();
         }catch (Exception s) {
             String message = "Amount must be a number greater than zero, and less than account balance";
@@ -312,52 +315,56 @@ public class BankController implements Initializable{
          * Index zero is filled with a dummy-account, to make indexing more user friendly. This account is not
          * accessible to the end-user
          */
+
         Customer.customersList.add(new Customer("portrait1.jpg", Customer.customersList.size(), 0001, "Fictional", "Fred",
                 "742 Evergreen Terrace", "01-01-1990"));
 
-        //Create a new customer object "Christian", and store in customer list
-        Customer.customersList.add(new Customer("portrait1.jpg", Customer.customersList.size(), 1525, "Christian", "Barbati",
-                "742 Evergreen Terrace", "06-22-1998"));
-
-        Customer.addCustomerToDB(Customer.customersList.get(Customer.customersList.size() - 1));
-
-        //Create a new customer object "Jenny" and store in customer list
-        Customer.customersList.add(new Customer("portrait2.jpg", Customer.customersList.size(),9486, "Jenny", "Baker",
-                "247 Evergreen Terrace", "12-12-1998"));
-
-        Customer.addCustomerToDB(Customer.customersList.get(Customer.customersList.size() - 1));
-
-        //Create a new customer object "Michael" and store in customer list
-        Customer.customersList.add(new Customer("portrait3.jpg", Customer.customersList.size(),3854, "Michael", "Smith",
-                "471 Evergreen Terrace", "07-15-1998"));
-
-        Customer.addCustomerToDB(Customer.customersList.get(Customer.customersList.size() - 1));
+        Account.accountsList.add(new Account("Chequing", 0));
+        Customer.customersList.get(0).customersAccounts.add(Account.accountsList.get(Account.accountsList.size() - 1));
 
         /**
-         * Open some accounts for our customers. Added in random order to demonstrate that forward and back buttons
-         * function agnostic of list position
+         * Though the one dummy-account above has been instantiated here in code, in real-life it would be more practical
+         * to instantiate the objects from a database.
+         *
+         * Iterate over the database and instantiate objects from all the customers
          */
 
-        Customer.customersList.get(0).openAccount("Chequing");
-        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
-        Customer.customersList.get(1).openAccount("Chequing");
-        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
-        Customer.customersList.get(1).openAccount("Savings");
-        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
-        Customer.customersList.get(2).openAccount("Savings");
-        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
-        Customer.customersList.get(2).openAccount("TFSA");
-        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
-        Customer.customersList.get(3).openAccount("Savings");
-        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
-        Customer.customersList.get(2).openAccount("Chequing");
-        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
-        Customer.customersList.get(2).openAccount("Savings");
-        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
-        Customer.customersList.get(1).openAccount("Chequing");
-        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
-        Customer.customersList.get(3).openAccount("Savings");
-        Account.addAccountToDB(Account.accountsList.get(Account.accountsList.size() - 1));
+        ResultSet custResultSet = DBController.DBRead("SELECT * FROM customers");
+
+        try{
+            while(custResultSet.next()){
+                Customer.customersList.add(new Customer(
+                        custResultSet.getString("imagePath"),
+                        Customer.customersList.size(),
+                        custResultSet.getInt("pin"),
+                        custResultSet.getString("firstName"),
+                        custResultSet.getString("lastName"),
+                        custResultSet.getString("address"),
+                        custResultSet.getString("dob")));
+            }
+            DBController.close();
+        }catch(Exception e){
+            System.out.println(e);
+        }
+
+        /**
+         * Iterate over the database and instantiate objects from all the accounts
+         */
+
+        ResultSet acctResultSet = DBController.DBRead("SELECT * FROM accounts");
+
+        try{
+            while(acctResultSet.next()){
+                Account.accountsList.add(new Account(acctResultSet.getString("accountType"), acctResultSet.getInt("accountOwner")));
+                Customer.customersList.get(acctResultSet.getInt("accountOwner")).customersAccounts.add(Account.accountsList.get(Account.accountsList.size() - 1));
+
+                //Customer.customersList.get(acctResultSet.getInt("accountOwner")).openAccount(acctResultSet.getString("accountType"));
+                Account.accountsList.get(Account.accountsList.size() - 1).setBalance(acctResultSet.getDouble("accountBalance"));
+            }
+            DBController.close();
+        }catch(Exception e){
+            System.out.println(e);
+        }
 
         /**
          * Populate the label fields with some initial values
@@ -375,49 +382,5 @@ public class BankController implements Initializable{
         currentAccount = 1;
         updateAccounts();
         updateCustomer();
-
-        /**
-         * Test database connectivity (basic read functions)
-         *
-         * Todo: Find better implementation for close() method (see DBController class)
-         * Todo: Find better way to call DBWrite automatically for each new Customer
-         * that is instantiated.
-         */
-
-        /**
-         * Test read functionality
-         */
-
-        ResultSet resultSet = DBController.DBRead("SELECT * FROM customers");
-
-        int customerNum;
-        String customerFirstName;
-        String customerLastName;
-        int customerPin;
-        String customerAddress;
-        String customerDob;
-
-        try{
-            while(resultSet.next()){
-                customerNum = resultSet.getInt("customerNum");
-                customerFirstName = resultSet.getString("firstName").trim();
-                customerLastName = resultSet.getString("lastName").trim();
-                customerPin = resultSet.getInt("pin");
-                customerAddress = resultSet.getString("address").trim();
-                customerDob = resultSet.getString("dob").trim();
-
-                System.out.println("Customer Number: " + customerNum);
-                System.out.println("First Name: " + customerFirstName);
-                System.out.println("Last Name: " + customerLastName);
-                System.out.println("PIN: " + customerPin);
-                System.out.println("Address: " + customerAddress);
-                System.out.println("DOB: " + customerDob);
-            }
-
-            DBController.close();
-        }catch(Exception e){
-            System.out.println(e);
-        }
-
     }
 }

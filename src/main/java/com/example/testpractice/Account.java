@@ -9,7 +9,6 @@ public class Account {
     private double balance;
     private String accountType;
     private int owner;
-
     private Double interestRate;
 
     /**
@@ -30,12 +29,30 @@ public class Account {
         setAccountNumber(accountNumber);
     }
 
-    public static void addAccountToDB(Account a){
-        DBController.DBWrite("INSERT INTO accounts (accountNum, accountType, accountOwner) VALUES ("
-                + a.getAccountNumber() + " , '"
-                + a.getAccountType() + "' , "
-                + a.getOwner() + ");"); //Need to find way to get owner
-        System.out.println("Account added to database: " + a.getAccountNumber());
+    /**
+     * Method to add an account to the SQL database.
+     *
+     * Non-static, so it can be called for each individual account without passing args.
+     */
+    public void addAccountToDB(){
+        new DBController().DBWrite("INSERT INTO accounts (accountNum, accountType, accountOwner, accountBalance, interestRate) VALUES ("
+                + getAccountNumber() + " , '"
+                + getAccountType() + "' , "
+                + getOwner() + " , "
+                + getBalance() + " , "
+                + getInterestRate() + ");");
+        System.out.println("Account added to database: " + Account.accountsList.get(Account.accountsList.size() - 1));
+    }
+
+    /**
+     * Function to update the balance of the account in the SQL database
+     */
+    public static void updateBalanceDB(int currentAccount){
+        new DBController().DBWrite("UPDATE accounts SET accountBalance = "
+                + Account.accountsList.get(currentAccount).getBalance()
+                + "WHERE accountNum = "
+                + currentAccount
+        );
     }
 
     public int getOwner() {
@@ -115,6 +132,8 @@ public class Account {
             balance += amount;
             System.out.println("Deposit of " + String.format("$%.2f", amount) + " is processed.");
             System.out.println("Account Balance " + String.format("$%.2f", balance) + "\n");
+
+
         }else{
             throw new IllegalArgumentException(String.format("%2f", amount) + " received. Amount must be greater than zero.");
         }
